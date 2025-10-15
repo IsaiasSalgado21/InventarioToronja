@@ -3,6 +3,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Item extends Model
 {
@@ -18,4 +19,8 @@ class Item extends Model
         'abc_class',
         'expiry_date',
     ];
+    public function getStockAttribute() {
+        return DB::table('presentations')->where('item_id', $this->id)->value('stock') ?? 0;
+    }
+    
 }

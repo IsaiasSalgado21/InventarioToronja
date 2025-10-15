@@ -11,6 +11,7 @@ use App\Http\Controllers\InventoryMovementController;
 use App\Http\Controllers\PriceHistoryController;
 use App\Http\Controllers\StorageZoneController;
 use App\Http\Controllers\ItemLocationController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return redirect()->route('login.form');
@@ -27,25 +28,24 @@ Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard'); // puedes crear esta vista
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::view('/inventory', 'inventory')->name('inventory');
     Route::view('/movements', 'movements')->name('movements');
     Route::view('/storage', 'storage')->name('storage');
     Route::view('/management', 'management')->name('management');
     Route::view('/reports', 'reports')->name('reports');
+
+    Route::Resource('users', UserController::class);
+    Route::Resource('categories', CategoryController::class);
+    Route::Resource('suppliers', SupplierController::class);
+    Route::Resource('items', ItemController::class);
+    Route::Resource('presentations', PresentationController::class);
+    Route::Resource('inventory-movements', InventoryMovementController::class);
+    Route::Resource('price-histories', PriceHistoryController::class);
+    Route::Resource('storage-zones', StorageZoneController::class);
+    Route::Resource('item-locations', ItemLocationController::class);
 });
 
-Route::apiResource('users', UserController::class);
-Route::apiResource('categories', CategoryController::class);
-Route::apiResource('suppliers', SupplierController::class);
-Route::apiResource('items', ItemController::class);
-Route::apiResource('presentations', PresentationController::class);
-Route::apiResource('inventory-movements', InventoryMovementController::class);
-Route::apiResource('price-histories', PriceHistoryController::class);
-Route::apiResource('storage-zones', StorageZoneController::class);
-Route::apiResource('item-locations', ItemLocationController::class);
 
 Route::get('/csrf-token', function () {
     $token = csrf_token();
