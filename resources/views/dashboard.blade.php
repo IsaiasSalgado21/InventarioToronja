@@ -38,6 +38,8 @@
                 </div>
             </div>
         </div>
+        
+
     </div>
 
     <!-- Tabla de insumos -->
@@ -65,7 +67,7 @@
                         <td>{{ $item->name }}</td>
                         <td>{{ $item->category_name ?? '-' }}</td>
                         <td>{{ $item->supplier_name ?? '-' }}</td>
-                        <td>{{ $item->location->name ??'-' }}</td>
+                        <td>{{ $item->location_name ??'-' }}</td>
                         <td>
                             <a href="{{ route('items.show', $item->id) }}" class="btn btn-info btn-sm">Ver</a>
                             <a href="{{ route('items.edit', $item->id) }}" class="btn btn-warning btn-sm">Editar</a>

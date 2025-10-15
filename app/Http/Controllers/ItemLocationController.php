@@ -31,7 +31,7 @@ class ItemLocationController extends Controller
     {
         $id = DB::table('item_locations')->insertGetId([
             'presentation_id' => $request->presentation_id,
-            'zone_id' => $request->zone_id,
+            'storage_zone_id' => $request->storage_zone_id,
             'space_occupied_m2' => $request->space_occupied_m2 ?? 0,
             'quantity_stored' => $request->quantity_stored ?? 0,
         ]);
