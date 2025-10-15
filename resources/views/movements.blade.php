@@ -1,12 +1,55 @@
 @extends('layouts.app')
 
-@section('title', 'Movements')
+@section('title', 'Movimientos de Inventario')
 
 @section('content')
-<div class="card shadow-sm">
-    <div class="card-body">
-        <h3>Movements</h3>
-        <p class="text-muted">Track inventory movements and transactions here.</p>
+<div class="container py-4">
+    <div class="card shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5>Movimientos de Inventario</h5>
+            <a href="#" class="btn btn-primary btn-sm disabled">Registrar Movimiento</a>
+        </div>
+
+        <div class="card-body table-responsive">
+            @if($movements->isEmpty())
+                <p class="text-center text-muted">No hay movimientos registrados.</p>
+            @else
+                <table class="table table-hover table-bordered align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Tipo</th>
+                            <th>SKU Presentación</th>
+                            <th>Descripción</th>
+                            <th>Cantidad</th>
+                            <th>Fecha</th>
+                            <th>Usuario</th>
+                            <th>Notas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($movements as $m)
+                            <tr>
+                                <td>{{ $m->id }}</td>
+                                <td>
+                                    @if($m->type === 'entry')
+                                        <span class="badge bg-success">Entrada</span>
+                                    @else
+                                        <span class="badge bg-danger">Salida</span>
+                                    @endif
+                                </td>
+                                <td>{{ $m->presentation_sku }}</td>
+                                <td>{{ $m->presentation_description }}</td>
+                                <td>{{ $m->quantity }}</td>
+                                <td>{{ \Carbon\Carbon::parse($m->movement_date)->format('d/m/Y H:i') }}</td>
+                                <td>{{ $m->user_name ?? '—' }}</td>
+                                <td>{{ $m->notes ?? '—' }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
+        </div>
     </div>
 </div>
 @endsection

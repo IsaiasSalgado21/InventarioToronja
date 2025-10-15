@@ -9,23 +9,24 @@ class InventoryMovementController extends Controller
 {
     public function index()
     {
-        // INNER JOIN con presentations e users
-        $rows = DB::table('inventory_movements as m')
+    
+        $movements = DB::table('inventory_movements as m')
             ->join('presentations as p', 'm.presentation_id', '=', 'p.id')
             ->leftJoin('users as u', 'm.user_id', '=', 'u.id')
             ->select(
                 'm.id',
                 'm.type',
                 'm.quantity',
-                'm.date_movement',
-                'm.observations',
+                'm.movement_date',
+                'm.notes',
                 'p.sku as presentation_sku',
                 'p.description as presentation_description',
-                'u.sku as user_sku'
+                'u.name as user_name'
             )
+            ->orderBy('m.movement_date', 'desc')
             ->get();
 
-        return response()->json($rows);
+        return view('movements', compact('movements'));
     }
 
     public function store(Request $request)
@@ -35,7 +36,7 @@ class InventoryMovementController extends Controller
             'user_id' => $request->user_id,
             'type' => $request->type,
             'quantity' => $request->quantity,
-            'observations' => $request->observations,
+            'notes' => $request->notes,
         ]);
 
         return response()->json(['message' => 'Movement created', 'id' => $id]);
