@@ -1,66 +1,54 @@
-<!doctype html>
-<html lang="es">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Registro - Toronja Print</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
+@extends('layouts.app')
 
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h4 class="text-center mb-4">Crear cuenta</h4>
+@section('title', 'Register')
 
-                    @if ($errors->any())
-                        <div class="alert alert-danger">
-                            <ul class="mb-0">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
+@section('content')
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h4 class="mb-3 text-center">Create Account</h4>
 
-                    <form method="POST" action="{{ route('register') }}">
-                        @csrf
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
 
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Nombre</label>
-                            <input id="name" name="name" type="text" class="form-control" required value="{{ old('name') }}">
-                        </div>
+                <form method="POST" action="{{ route('register.post') }}">
+                    @csrf
+                    <div class="mb-3">
+                        <label>Name</label>
+                        <input type="text" name="name" class="form-control" required>
+                    </div>
 
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Correo</label>
-                            <input id="email" name="email" type="email" class="form-control" required value="{{ old('email') }}">
-                        </div>
+                    <div class="mb-3">
+                        <label>Email</label>
+                        <input type="email" name="email" class="form-control" required>
+                    </div>
 
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Contraseña</label>
-                            <input id="password" name="password" type="password" class="form-control" required>
-                        </div>
+                    <div class="mb-3">
+                        <label>Password</label>
+                        <input type="password" name="password" class="form-control" required>
+                    </div>
 
-                        <div class="mb-3">
-                            <label for="password_confirmation" class="form-label">Confirmar contraseña</label>
-                            <input id="password_confirmation" name="password_confirmation" type="password" class="form-control" required>
-                        </div>
+                    <div class="mb-3">
+                        <label>Confirm Password</label>
+                        <input type="password" name="password_confirmation" class="form-control" required>
+                    </div>
 
-                        <div class="d-grid mb-3">
-                            <button type="submit" class="btn btn-success">Registrar</button>
-                        </div>
+                    <button type="submit" class="btn btn-dark w-100">Register</button>
 
-                        <div class="text-center">
-                            <a href="{{ route('login.form') }}">¿Ya tienes cuenta? Inicia sesión</a>
-                        </div>
-                    </form>
-                </div>
+                    <div class="text-center mt-3">
+                        <a href="{{ route('login') }}">Already have an account? Login</a>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
-
-</body>
-</html>
+@endsection

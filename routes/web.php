@@ -30,6 +30,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard'); // puedes crear esta vista
     })->name('dashboard');
+    Route::view('/inventory', 'inventory')->name('inventory');
+    Route::view('/movements', 'movements')->name('movements');
+    Route::view('/storage', 'storage')->name('storage');
+    Route::view('/management', 'management')->name('management');
+    Route::view('/reports', 'reports')->name('reports');
 });
 
 Route::apiResource('users', UserController::class);
