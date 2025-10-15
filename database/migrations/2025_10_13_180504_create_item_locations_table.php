@@ -11,17 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('presentacions', function (Blueprint $table) {
+        Schema::create('item_locations', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('presentation_id');
+            $table->unsignedBigInteger('storage_zone_id');
+            $table->decimal('occupied_m2', 8, 2)->default(0.00);
+            $table->integer('stored_quantity')->default(0);
+            $table->timestamp('assigned_at')->useCurrent();
             $table->timestamps();
         });
     }
+
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('presentacions');
+        Schema::dropIfExists('item_locations');
     }
 };
