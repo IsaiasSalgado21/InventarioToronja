@@ -3,39 +3,88 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Models\Category;
+use Illuminate\Validation\Rule;
 
 class CategoryController extends Controller
 {
     public function index()
     {
-        return DB::table('categories')->get();
+        $categories = Category::orderBy('name')->get(); // SoftDeletes excluye automáticamente deleted_at != null
+        return response()->json($categories);
     }
 
     public function store(Request $request)
     {
-        $id = DB::table('categories')->insertGetId([
-            'name' => $request->name,
-            'description' => $request->description,
+        $data = $request->validate([
+            'name' => 'required|string|max:100|unique:categories,name',
+            'description' => 'nullable|string|max:255',
         ]);
 
-        return response()->json(['message' => 'Category created', 'id' => $id]);
+        $category = Category::create($data);
+
+        return response()->json(['message' => 'Category created', 'id' => $category->id]);
     }
 
     public function show($id)
     {
-        return DB::table('categories')->where('id', $id)->first();
+        $category = Category::find($id);
+
+        if (!$category) {
+            return response()->json(['message' => 'Category not found'], 404);
+        }
+
+        return response()->json($category);
     }
 
     public function update(Request $request, $id)
     {
-        DB::table('categories')->where('id', $id)->update($request->all());
+        $category = Category::find($id);
+
+        if (!$category) {
+            return response()->json(['message' => 'Category not found'], 404);
+        }
+
+        $data = $request->validate([
+            'name' => [
+                'required',
+                'string',
+                'max:100',
+                Rule::unique('categories')->ignore($category->id),
+            ],
+            'description' => 'nullable|string|max:255',
+        ]);
+
+        $category->update($data);
+
         return response()->json(['message' => 'Category updated']);
     }
 
+
     public function destroy($id)
     {
-        DB::table('categories')->where('id', $id)->delete();
+        $category = Category::find($id);
+
+        if (!$category) {
+            return response()->json(['message' => 'Category not found'], 404);
+        }
+
+        $category->delete();
+
         return response()->json(['message' => 'Category deleted']);
+    }
+
+    
+    public function restore($id)
+    {
+        $category = Category::withTrashed()->find($id);
+
+        if (!$category) {
+            return response()->json(['message' => 'Category not found'], 404);
+        }
+
+        $category->restore();
+
+        return response()->json(['message' => 'Category restored']);
     }
 }

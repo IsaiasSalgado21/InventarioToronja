@@ -18,6 +18,7 @@ return new class extends Migration
             $table->decimal('new_price', 12, 2)->nullable();
             $table->timestamp('changed_at')->useCurrent();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -27,6 +28,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('price_histories');
+
+        schema::table('price_histories', function (Blueprint $table) {
+            $table->dropSoftDeletes();
+        });
     }
 };

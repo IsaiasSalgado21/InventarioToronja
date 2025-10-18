@@ -3,53 +3,65 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Models\Presentation;
 
 class PresentationController extends Controller
 {
+
     public function index()
     {
-        $rows = DB::table('presentations as p')
-            ->join('items as i', 'p.item_id', '=', 'i.id')
-            ->join('categories as c', 'i.category_id', '=', 'c.id')
-            ->join('suppliers as s', 'i.supplier_id', '=', 's.id')
-            ->select(
-                'p.id',
-                'p.sku',
-                'p.description',
-                'p.stock_current',
-                'p.stock_minimum',
-                'p.unit_price',
-                'p.units_per_presentation',
-                'i.name as item_name',
-                'c.name as category_name',
-                's.name as supplier_name'
-            )
-            ->get();
-
-        return response()->json($rows);
+        $presentations = Presentation::with(['item.category', 'item.supplier'])->get();
+        return response()->json($presentations);
     }
 
     public function store(Request $request)
     {
-        $id = DB::table('presentations')->insertGetId($request->all());
-        return response()->json(['message' => 'Presentation created', 'id' => $id]);
-    }
+        $data = $request->validate([
+            'item_id' => 'required|integer|exists:items,id',
+            'sku' => 'required|string|max:100|unique:presentations,sku',
+            'description' => 'nullable|string|max:200',
+            'units_per_presentation' => 'nullable|integer|min:1',
+            'stock_current' => 'nullable|integer|min:0',
+            'stock_minimum' => 'nullable|integer|min:0',
+            'unit_price' => 'nullable|numeric|min:0',
+            'base_unit' => 'nullable|string|max:50',
+        ]);
 
+        $presentation = Presentation::create($data);
+
+        return response()->json(['message' => 'Presentation created', 'id' => $presentation->id]);
+    }
     public function show($id)
     {
-        return DB::table('presentations')->where('id', $id)->first();
+        $presentation = Presentation::with(['item.category', 'item.supplier'])->findOrFail($id);
+        return response()->json($presentation);
     }
 
     public function update(Request $request, $id)
     {
-        DB::table('presentations')->where('id', $id)->update($request->all());
+        $presentation = Presentation::findOrFail($id);
+
+        $data = $request->validate([
+            'item_id' => 'sometimes|required|integer|exists:items,id',
+            'sku' => "sometimes|required|string|max:100|unique:presentations,sku,{$id}",
+            'description' => 'nullable|string|max:200',
+            'units_per_presentation' => 'nullable|integer|min:1',
+            'stock_current' => 'nullable|integer|min:0',
+            'stock_minimum' => 'nullable|integer|min:0',
+            'unit_price' => 'nullable|numeric|min:0',
+            'base_unit' => 'nullable|string|max:50',
+        ]);
+
+        $presentation->update($data);
+
         return response()->json(['message' => 'Presentation updated']);
     }
 
     public function destroy($id)
     {
-        DB::table('presentations')->where('id', $id)->delete();
+        $presentation = Presentation::findOrFail($id);
+        $presentation->delete();
+
         return response()->json(['message' => 'Presentation deleted']);
     }
 }

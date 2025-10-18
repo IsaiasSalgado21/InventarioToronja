@@ -19,6 +19,7 @@ return new class extends Migration
         $table->decimal('dimension_y', 6, 2)->default(0.00); // meters
         $table->decimal('capacity_m2', 8, 2)->default(0.00);
         $table->timestamps();
+        $table->softDeletes();
     });
 }
 
@@ -28,6 +29,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('storage_zones');
+        Schema::table('storage_zones', function (Blueprint $table) {
+        $table->dropSoftDeletes();
+        });
     }
 };

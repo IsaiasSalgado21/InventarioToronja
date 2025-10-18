@@ -20,6 +20,7 @@ return new class extends Migration
             $table->timestamp('movement_date')->useCurrent();
             $table->text('notes')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -31,6 +32,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('inventory_movements');
+        schema::table('inventory_movements', function (Blueprint $table) {
+            $table->dropSoftDeletes();
+        });
     }
 };

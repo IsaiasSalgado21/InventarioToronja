@@ -33,6 +33,8 @@
                     <td>{{ $it->supplier_name ?? '-' }}</td>
                     <td>{{ $it->abc_class ?? '-' }}</td>
                     <td>{{ $it->expiry_date ? \Carbon\Carbon::parse($it->expiry_date)->format('Y-m-d') : '-' }}</td>
+                    <td>{{ $it->stored_quantity ?? '-' }}</td>
+                    <td>{{ $it->occupied_m2 ?? '-' }}</td>
                     <td>
                         <a href="{{ route('items.show', $it->id) }}" class="btn btn-sm btn-info">View</a>
                         <a href="{{ route('items.edit', $it->id) }}" class="btn btn-sm btn-warning">Edit</a>

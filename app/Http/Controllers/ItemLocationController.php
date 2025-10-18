@@ -12,7 +12,7 @@ class ItemLocationController extends Controller
         // INNER JOIN con presentations y storage_zones
         $rows = DB::table('item_locations as l')
             ->join('presentations as p', 'l.presentation_id', '=', 'p.id')
-            ->join('storage_zones as z', 'l.zone_id', '=', 'z.id')
+            ->join('storage_zones as z', 'l.storage_zone_id', '=', 'z.id')
             ->select(
                 'l.id',
                 'l.space_occupied_m2',

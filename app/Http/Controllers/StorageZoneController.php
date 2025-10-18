@@ -41,4 +41,38 @@ class StorageZoneController extends Controller
         DB::table('storage_zones')->where('id', $id)->delete();
         return response()->json(['message' => 'Storage zone deleted']);
     }
+    public function dashboard()
+{
+    $zones = DB::table('storage_zones as z')
+        ->leftJoin('item_locations as l', 'l.storage_zone_id', '=', 'z.id')
+        ->leftJoin('presentations as p', 'p.id', '=', 'l.presentation_id')
+        ->leftJoin('items as i', 'i.id', '=', 'p.item_id')
+        ->select(
+            'z.id',
+            'z.name as zone_name',
+            'z.description',
+            'z.dimension_x',
+            'z.dimension_y',
+            'z.capacity_m2',
+            DB::raw('COALESCE(SUM(l.occupied_m2), 0) as occupied_m2'),
+            DB::raw('COALESCE(SUM(l.stored_quantity), 0) as total_units')
+        )
+        ->groupBy('z.id', 'z.name', 'z.description', 'z.dimension_x', 'z.dimension_y', 'z.capacity_m2')
+        ->get();
+
+    $presentations = DB::table('item_locations as l')
+        ->join('presentations as p', 'p.id', '=', 'l.presentation_id')
+        ->join('items as i', 'i.id', '=', 'p.item_id')
+        ->select(
+            'l.storage_zone_id',
+            'p.sku',
+            'p.description as presentation_description',
+            'l.stored_quantity'
+        )
+        ->get()
+        ->groupBy('storage_zone_id'); // Agrupa presentaciones por zona
+
+    return view('storage', compact('zones', 'presentations'));
+}
+
 }

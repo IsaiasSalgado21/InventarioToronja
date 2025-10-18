@@ -22,6 +22,7 @@ return new class extends Migration
         $table->integer('stock_minimum')->default(0);
         $table->decimal('unit_price', 12, 2)->default(0.00);
         $table->timestamps();
+        $table->softDeletes();
     });
     }
 
@@ -30,6 +31,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('presentations');
+        Schema::table('presentations', function (Blueprint $table) {
+            $table->dropSoftDeletes();
+        });
     }
 };

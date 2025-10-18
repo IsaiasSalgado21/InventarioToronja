@@ -3,42 +3,63 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Models\Supplier;
 
 class SupplierController extends Controller
 {
+
     public function index()
     {
-        return DB::table('suppliers')->get();
+    
+        $suppliers = Supplier::all();
+
+        return response()->json($suppliers);
     }
 
     public function store(Request $request)
     {
-        $id = DB::table('suppliers')->insertGetId([
-            'name' => $request->name,
-            'contact' => $request->contact,
-            'phone' => $request->phone,
-            'email' => $request->email,
-            'address' => $request->address,
+        $data = $request->validate([
+            'name' => 'required|string|max:150',
+            'contact' => 'nullable|string|max:150',
+            'phone' => 'nullable|string|max:50',
+            'email' => 'nullable|email|max:150',
+            'address' => 'nullable|string|max:255',
         ]);
 
-        return response()->json(['message' => 'Supplier created', 'id' => $id]);
+        $supplier = Supplier::create($data);
+
+        return response()->json(['message' => 'Supplier created', 'id' => $supplier->id]);
     }
 
     public function show($id)
     {
-        return DB::table('suppliers')->where('id', $id)->first();
+        $supplier = Supplier::findOrFail($id); // Solo obtiene si no está soft deleted
+
+        return response()->json($supplier);
     }
 
     public function update(Request $request, $id)
     {
-        DB::table('suppliers')->where('id', $id)->update($request->all());
+        $supplier = Supplier::findOrFail($id);
+
+        $data = $request->validate([
+            'name' => 'sometimes|required|string|max:150',
+            'contact' => 'nullable|string|max:150',
+            'phone' => 'nullable|string|max:50',
+            'email' => 'nullable|email|max:150',
+            'address' => 'nullable|string|max:255',
+        ]);
+
+        $supplier->update($data);
+
         return response()->json(['message' => 'Supplier updated']);
     }
 
     public function destroy($id)
     {
-        DB::table('suppliers')->where('id', $id)->delete();
+        $supplier = Supplier::findOrFail($id);
+        $supplier->delete(); 
+
         return response()->json(['message' => 'Supplier deleted']);
     }
 }

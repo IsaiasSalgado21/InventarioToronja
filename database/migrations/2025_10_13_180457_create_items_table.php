@@ -21,6 +21,7 @@ return new class extends Migration
             $table->date('expiry_date')->nullable();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->nullable();
+            $table->softDeletes();
         });
     }
 
@@ -30,6 +31,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('items');
+        schema::table('items', function (Blueprint $table) {
+            $table->dropSoftDeletes();
+        });
     }
 };

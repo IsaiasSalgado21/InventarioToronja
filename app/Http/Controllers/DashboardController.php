@@ -43,4 +43,17 @@ class DashboardController extends Controller
             'items'
         ));
     }
+    public function management()
+    {
+        $users = DB::table('users')->get();
+        $categories = DB::table('categories')->get();
+        $suppliers = DB::table('suppliers')->get();
+        $presentations = DB::table('presentations as p')
+            ->join('items as i', 'p.item_id', '=', 'i.id')
+            ->join('categories as c', 'i.category_id', '=', 'c.id')
+            ->select('p.*', 'i.name as item_name', 'c.name as category_name')
+            ->get();
+
+        return view('management', compact('users', 'categories', 'suppliers', 'presentations'));
+    }
 }

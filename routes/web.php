@@ -32,10 +32,9 @@ Route::middleware('auth')->group(function () {
     Route::view('/inventory', 'inventory')->name('inventory');
     Route::get('/inventory', [App\Http\Controllers\InventoryController::class, 'index'])->name('inventory');
     Route::get('/movements', [InventoryMovementController::class, 'index'])->name('movements');
-    Route::view('/storage', 'storage')->name('storage');
-    Route::view('/management', 'management')->name('management');
+    Route::get('/storage', [StorageZoneController::class, 'dashboard'])->name('storage');
+    Route::get('/management', [DashboardController::class, 'management'])->name('management');
     Route::view('/reports', 'reports')->name('reports');
-
     Route::Resource('users', UserController::class);
     Route::Resource('categories', CategoryController::class);
     Route::Resource('suppliers', SupplierController::class);

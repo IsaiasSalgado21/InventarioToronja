@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('stored_quantity')->default(0);
             $table->timestamp('assigned_at')->useCurrent();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -28,6 +29,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('item_locations');
+        Schema::table('item_locations', function (Blueprint $table) {
+        $table->dropSoftDeletes();
+    });
     }
 };

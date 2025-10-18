@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
@@ -13,6 +14,11 @@ class InventoryController extends Controller
             ->leftJoin('suppliers as s', 'i.supplier_id', '=', 's.id')
             ->leftJoin('item_locations as il', 'p.id', '=', 'il.presentation_id')
             ->leftJoin('storage_zones as sz', 'il.storage_zone_id', '=', 'sz.id')
+            ->whereNull('p.deleted_at')
+            ->whereNull('i.deleted_at')
+            ->whereNull('c.deleted_at')
+            ->whereNull('s.deleted_at')
+            ->whereNull('sz.deleted_at')
             ->select(
                 'p.id',
                 'p.sku',

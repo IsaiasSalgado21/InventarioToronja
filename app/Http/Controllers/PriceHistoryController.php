@@ -3,53 +3,58 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Models\PriceHistory;
 
 class PriceHistoryController extends Controller
 {
+
     public function index()
     {
-        // INNER JOIN con presentations
-        $rows = DB::table('price_histories as h')
-            ->join('presentations as p', 'h.presentation_id', '=', 'p.id')
-            ->select(
-                'h.id',
-                'h.price_old',
-                'h.price_new',
-                'h.date_change',
-                'p.sku as presentation_sku',
-                'p.description as presentation_description'
-            )
-            ->get();
+        $histories = PriceHistory::with('presentation')->get(); // Relación con presentation
 
-        return response()->json($rows);
+        return response()->json($histories);
     }
 
     public function store(Request $request)
     {
-        $id = DB::table('price_histories')->insertGetId([
-            'presentation_id' => $request->presentation_id,
-            'price_old' => $request->price_old,
-            'price_new' => $request->price_new,
+        $data = $request->validate([
+            'presentation_id' => 'required|integer|exists:presentations,id',
+            'price_old' => 'required|numeric|min:0',
+            'price_new' => 'required|numeric|min:0',
         ]);
 
-        return response()->json(['message' => 'Price history created', 'id' => $id]);
+        $history = PriceHistory::create($data);
+
+        return response()->json(['message' => 'Price history created', 'id' => $history->id]);
     }
 
     public function show($id)
     {
-        return DB::table('price_histories')->where('id', $id)->first();
+        $history = PriceHistory::with('presentation')->findOrFail($id);
+
+        return response()->json($history);
     }
 
     public function update(Request $request, $id)
     {
-        DB::table('price_histories')->where('id', $id)->update($request->all());
+        $history = PriceHistory::findOrFail($id);
+
+        $data = $request->validate([
+            'presentation_id' => 'sometimes|required|integer|exists:presentations,id',
+            'price_old' => 'sometimes|required|numeric|min:0',
+            'price_new' => 'sometimes|required|numeric|min:0',
+        ]);
+
+        $history->update($data);
+
         return response()->json(['message' => 'Price history updated']);
     }
 
     public function destroy($id)
     {
-        DB::table('price_histories')->where('id', $id)->delete();
+        $history = PriceHistory::findOrFail($id);
+        $history->delete();
+
         return response()->json(['message' => 'Price history deleted']);
     }
 }

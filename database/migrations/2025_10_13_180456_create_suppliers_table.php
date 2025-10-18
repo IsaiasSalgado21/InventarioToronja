@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('email', 150)->nullable();
             $table->string('address', 255)->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -28,6 +29,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('suppliers');
+        Schema::table('supplier', function (Blueprint $table) {
+            $table->dropSoftDeletes();
+        });
     }
 };
