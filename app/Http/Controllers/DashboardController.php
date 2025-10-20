@@ -9,11 +9,11 @@ class DashboardController extends Controller
     public function index()
     {
     
-        $totalItems = DB::table('items')->count();
-        $totalCategories = DB::table('categories')->count();
-        $totalSuppliers = DB::table('suppliers')->count();
+        $totalItems = DB::table('items')->whereNull('deleted_at')->count();
+        $totalCategories = DB::table('categories')->whereNull('deleted_at')->count();
+        $totalSuppliers = DB::table('suppliers')->whereNull('deleted_at')->count();
         $totalMovements = DB::table('inventory_movements')->count();
-        $totalStock = DB::table('presentations')->sum('stock_current');
+        $totalStock = DB::table('presentations')->whereNull('deleted_at')->sum('stock_current');
 
         $items = DB::table('items as i')
             ->leftJoin('categories as c', 'i.category_id', '=', 'c.id')
@@ -21,6 +21,7 @@ class DashboardController extends Controller
             ->leftJoin('presentations as p', 'p.item_id', '=', 'i.id')
             ->leftJoin('item_locations as l', 'p.id', '=', 'l.presentation_id')
             ->leftJoin('storage_zones as z', 'l.storage_zone_id', '=', 'z.id')
+            ->whereNull('i.deleted_at')
             ->select(
                 'i.id',
                 'i.name',

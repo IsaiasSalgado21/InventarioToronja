@@ -21,6 +21,8 @@
                     <th>Supplier</th>
                     <th>ABC</th>
                     <th>Expiry</th>
+                    <th>cantidad almacenada</th>
+                    <th>espacio ocupado</th>
                     <th>Actions</th>
                 </tr>
             </thead>

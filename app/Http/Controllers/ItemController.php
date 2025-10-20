@@ -141,7 +141,20 @@ class ItemController extends Controller
 
         return view('items.show', compact('item'));
     }
+    public function edit($id)
+{
+    $item = DB::table('items')->where('id', $id)->whereNull('deleted_at')->first();
 
+    if (!$item) {
+        return redirect()->route('items.index')->with('error', 'Item no encontrado');
+    }
+
+    $categories = DB::table('categories')->whereNull('deleted_at')->orderBy('name')->get();
+    $suppliers = DB::table('suppliers')->whereNull('deleted_at')->orderBy('name')->get();
+    $storageZones = DB::table('storage_zones')->whereNull('deleted_at')->orderBy('name')->get();
+
+    return view('items.edit', compact('item', 'categories', 'suppliers', 'storageZones'));
+}
     public function update(Request $request, $id)
     {
         $data = $request->validate([
