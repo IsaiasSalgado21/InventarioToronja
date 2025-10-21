@@ -20,8 +20,26 @@ class Item extends Model
         'abc_class',
         'expiry_date',
     ];
-    public function getStockAttribute() {
-        return DB::table('presentations')->where('item_id', $this->id)->value('stock') ?? 0;
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class);
+    }
+    public function presentations()
+    {
+        return $this->hasMany(Presentation::class);
+    }
+    public function getStockTotalAttribute()
+    {
+        if ($this->relationLoaded('presentations')) {
+            return $this->presentations->sum('stock_current');
+        }
+        
+        return $this->presentations()->sum('stock_current');
+    }
+
     
 }
