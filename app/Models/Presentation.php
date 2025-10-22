@@ -21,4 +21,31 @@ class Presentation extends Model
         'stock_minimum',
         'unit_price',
     ];
+
+    public function item()
+    {
+        return $this->belongsTo(Item::class);
+    }
+
+    public function itemLocations()
+    {
+        return $this->hasMany(ItemLocation::class);
+    }
+
+    public function inventoryMovements()
+    {
+        return $this->hasMany(InventoryMovement::class);
+    }
+
+    public function priceHistories()
+    {
+        return $this->hasMany(PriceHistory::class);
+    }
+
+    public function storageZones()
+    {
+        return $this->belongsToMany(StorageZone::class, 'item_locations')
+                    ->withPivot('stored_quantity', 'occupied_m2', 'id')
+                    ->withTimestamps();
+    }
 }

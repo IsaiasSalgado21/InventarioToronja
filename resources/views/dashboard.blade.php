@@ -56,7 +56,7 @@
                         <th>Nombre</th>
                         <th>Categoría</th>
                         <th>Proveedor</th>
-                        <th>Ubicación</th>
+                        <th>Stock Total</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -65,9 +65,9 @@
                     <tr>
                         <td>{{ $item->id }}</td>
                         <td>{{ $item->name }}</td>
-                        <td>{{ $item->category_name ?? '-' }}</td>
-                        <td>{{ $item->supplier_name ?? '-' }}</td>
-                        <td>{{ $item->location_name ??'-' }}</td>
+                        <td>{{ $item->category->name ?? '-' }}</td>
+                        <td>{{ $item->supplier->name ?? '-' }}</td>
+                        <td>{{ $item->stock_total }}</td>
                         <td>
                             <a href="{{ route('items.show', $item->id) }}" class="btn btn-info btn-sm">Ver</a>
                             <a href="{{ route('items.edit', $item->id) }}" class="btn btn-warning btn-sm">Editar</a>

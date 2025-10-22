@@ -4,38 +4,19 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Item;
+use App\Models\Category;
+use App\Models\Supplier;
+use App\Models\Presentation;
+use App\Models\ItemLocation;
+use App\Models\StorageZone;
 
 class ItemController extends Controller
 {
     public function index()
     {
-        $items = DB::table('items as i')
-            ->leftJoin('categories as c', 'i.category_id', '=', 'c.id')
-            ->leftJoin('suppliers as s', 'i.supplier_id', '=', 's.id')
-            ->leftJoin('presentations as p', 'p.item_id', '=', 'i.id')
-            ->leftJoin('item_locations as l', 'l.presentation_id', '=', 'p.id')
-            ->leftJoin('storage_zones as z', 'l.storage_zone_id', '=', 'z.id')
-            ->whereNull('i.deleted_at')
-            ->whereNull('c.deleted_at')
-            ->whereNull('s.deleted_at')
-            ->whereNull('p.deleted_at')
-            ->whereNull('z.deleted_at')
-            ->select(
-                'i.id',
-                'i.name',
-                'i.expiry_date',
-                'c.name as category_name',
-                's.name as supplier_name',
-                'p.sku',
-                'p.description as presentation_description',
-                'p.stock_current',
-                'p.stock_minimum',
-                'p.unit_price',
-                'z.name as storage_zone',
-                'l.stored_quantity',
-                'l.occupied_m2'
-            )
-            ->orderBy('i.id', 'desc')
+        $items = Item::with(['category', 'supplier', 'presentations.itemLocations.storageZone'])
+            ->latest('id') // orderBy('id', 'desc')
             ->get();
 
         return view('items.index', compact('items'));
@@ -43,9 +24,9 @@ class ItemController extends Controller
 
     public function create()
     {
-        $categories = DB::table('categories')->whereNull('deleted_at')->orderBy('name')->get();
-        $suppliers = DB::table('suppliers')->whereNull('deleted_at')->orderBy('name')->get();
-        $storageZones = DB::table('storage_zones')->whereNull('deleted_at')->orderBy('name')->get();
+        $categories = Category::orderBy('name')->get();
+        $suppliers = Supplier::orderBy('name')->get();
+        $storageZones = StorageZone::orderBy('name')->get();
 
         return view('items.create', compact('categories', 'suppliers', 'storageZones'));
     }
@@ -70,70 +51,56 @@ class ItemController extends Controller
             'occupied_m2' => 'nullable|numeric|min:0',
         ]);
 
-        $itemId = DB::table('items')->insertGetId([
-            'name' => $data['name'],
-            'description' => $data['description'] ?? null,
-            'category_id' => $data['category_id'] ?? null,
-            'supplier_id' => $data['supplier_id'] ?? null,
-            'abc_class' => $data['abc_class'] ?? null,
-            'expiry_date' => $data['expiry_date'] ?? null,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        try{
+            $item = DB::transaction(function () use ($data) {
+                $item = Item::create([
+                    'name' => $data['name'],
+                    'description' => $data['description'] ?? null,
+                    'category_id' => $data['category_id'] ?? null,
+                    'supplier_id' => $data['supplier_id'] ?? null,
+                    'abc_class' => $data['abc_class'] ?? null,
+                    'expiry_date' => $data['expiry_date'] ?? null,
+                ]);
+                if(!empty($data['presentation_sku']) || !empty($data['presentation_description']) || !empty($data['units_per_presentation'])){
+                    $presentation = Presentation::create([
+                        'item_id' => $item->id,
+                        'sku' => $data['presentation_sku'] ?? null,
+                        'description' => $data['presentation_description'] ?? null,
+                        'units_per_presentation' => $data['units_per_presentation'] ?? null,
+                        'stock_current' => $data['stock_current'] ?? 0,
+                        'stock_minimum' => $data['stock_minimum'] ?? 0,
+                        'unit_price' => $data['unit_price'] ?? 0,
+                    ]);
 
-        $presentationId = null;
-        if (!empty($data['presentation_sku'])) {
-            $presentationId = DB::table('presentations')->insertGetId([
-                'item_id' => $itemId,
-                'sku' => $data['presentation_sku'],
-                'description' => $data['presentation_description'] ?? '',
-                'units_per_presentation' => $data['units_per_presentation'] ?? 1,
-                'stock_current' => $data['stock_current'] ?? 0,
-                'stock_minimum' => $data['stock_minimum'] ?? 0,
-                'unit_price' => $data['unit_price'] ?? 0,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+                    if (!empty($data['storage_zone_id'])) {
+                        ItemLocation::create([
+                            'presentation_id' => $presentation->id,
+                            'storage_zone_id' => $data['storage_zone_id'],
+                            'stored_quantity' => $data['stored_quantity'] ?? 0,
+                            'occupied_m2' => $data['occupied_m2'] ?? 0,
+                            'assigned_at' => now(),
+                        ]);
+                        $presentation->update(['stock_current' => $data['stored_quantity'] ?? 0]);
+                    }else{
+                        $presentation->update(['stock_current' => 0]);
+                    }
+                }
+                return $item;
+            });
+            return redirect()->route('items.index')
+                         ->with('success', "Item creado correctamente (ID: {$item->id})");
+
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error al crear el item: ' . $e->getMessage())->withInput();
         }
-
-        if ($presentationId && !empty($data['storage_zone_id'])) {
-            DB::table('item_locations')->insert([
-                'presentation_id' => $presentationId,
-                'storage_zone_id' => $data['storage_zone_id'],
-                'stored_quantity' => $data['stored_quantity'] ?? 0,
-                'occupied_m2' => $data['occupied_m2'] ?? 0,
-                'date_assigned' => now(),
-            ]);
-        }
-
-        return redirect()->route('items.index')
-            ->with('success', "Item creado correctamente (ID: {$itemId})");
     }
-
     public function show($id)
     {
-        $item = DB::table('items as i')
-            ->leftJoin('categories as c', 'i.category_id', '=', 'c.id')
-            ->leftJoin('suppliers as s', 'i.supplier_id', '=', 's.id')
-            ->leftJoin('presentations as p', 'p.item_id', '=', 'i.id')
-            ->leftJoin('item_locations as l', 'l.presentation_id', '=', 'p.id')
-            ->leftJoin('storage_zones as z', 'l.storage_zone_id', '=', 'z.id')
-            ->where('i.id', $id)
-            ->whereNull('i.deleted_at')
-            ->select(
-                'i.*',
-                'c.name as category_name',
-                's.name as supplier_name',
-                'p.sku',
-                'p.description as presentation_description',
-                'p.stock_current',
-                'p.stock_minimum',
-                'p.unit_price',
-                'z.name as storage_zone',
-                'l.stored_quantity',
-                'l.occupied_m2'
-            )
-            ->first();
+        $item = Item::with([
+            'category', 
+            'supplier', 
+            'presentations.itemLocations.storageZone' 
+        ])->find($id);
 
         if (!$item) {
             return redirect()->route('items.index')->with('error', 'Item no encontrado');
@@ -143,15 +110,15 @@ class ItemController extends Controller
     }
     public function edit($id)
 {
-    $item = DB::table('items')->where('id', $id)->whereNull('deleted_at')->first();
+    $item = Item::find($id);
 
     if (!$item) {
         return redirect()->route('items.index')->with('error', 'Item no encontrado');
     }
 
-    $categories = DB::table('categories')->whereNull('deleted_at')->orderBy('name')->get();
-    $suppliers = DB::table('suppliers')->whereNull('deleted_at')->orderBy('name')->get();
-    $storageZones = DB::table('storage_zones')->whereNull('deleted_at')->orderBy('name')->get();
+    $categories = Category::orderBy('name')->get();
+    $suppliers = Supplier::orderBy('name')->get();
+    $storageZones = StorageZone::orderBy('name')->get();
 
     return view('items.edit', compact('item', 'categories', 'suppliers', 'storageZones'));
 }
@@ -166,28 +133,24 @@ class ItemController extends Controller
             'expiry_date' => 'nullable|date',
         ]);
 
-        $updated = DB::table('items')
-            ->where('id', $id)
-            ->whereNull('deleted_at')
-            ->update(array_merge($data, ['updated_at' => now()]));
+        $item = Item::find($id);
 
-        if (!$updated) {
+        if (!$item) {
             return redirect()->route('items.index')->with('error', 'No se pudo actualizar o el item no existe');
         }
+
+        $item->update($data);
 
         return redirect()->route('items.show', $id)->with('success', 'Item actualizado correctamente');
     }
 
     public function destroy($id)
     {
-        $deleted = DB::table('items')
-            ->where('id', $id)
-            ->whereNull('deleted_at')
-            ->update(['deleted_at' => now()]);
-
-        if (!$deleted) {
-            return redirect()->route('items.index')->with('error', 'Item no encontrado o ya eliminado');
+       $item =Item::find($id);
+        if (!$item) {
+            return redirect()->route('items.index')->with('error', 'Item no encontrado');
         }
+        $item->delete(); 
 
         return redirect()->route('items.index')->with('success', 'Item eliminado lógicamente');
     }

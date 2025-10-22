@@ -18,4 +18,8 @@ class StorageZone extends Model
         'dimension_y',
         'capacity_m2',
     ];
+    public function itemLocations()
+    {
+        return $this->hasMany(ItemLocation::class);
+    }
 }

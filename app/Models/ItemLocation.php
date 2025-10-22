@@ -17,4 +17,19 @@ class ItemLocation extends Model
         'stored_quantity',
         'assigned_at',
     ];
+
+    public function presentation()
+    {
+        return $this->belongsTo(Presentation::class);
+    }
+
+    public function storageZone()
+    {
+        return $this->belongsTo(StorageZone::class);
+    }
+        
+    public function items()
+    {
+        return $this->hasMany(Item::class);
+    }
 }

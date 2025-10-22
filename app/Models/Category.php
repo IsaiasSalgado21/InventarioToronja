@@ -12,4 +12,9 @@ class Category extends Model
     protected $table = 'categories';
 
     protected $fillable = ['name', 'description'];
+    
+    public function items()
+    {
+        return $this->hasMany(Item::class);
+    }
 }
