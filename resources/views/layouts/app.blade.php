@@ -21,9 +21,9 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             @auth
             <ul class="navbar-nav me-auto">
-                <li class="nav-item"><a class="nav-link" href="{{ route('inventory') }}">Inventory</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('movements') }}">Movements</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('storage') }}">Storage</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('inventory') }}">Inventario</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('movements') }}">Movimientos</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('storage_zones.index') }}">Almacen</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('management') }}">Management</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('reports') }}">Reports</a></li>
             </ul>

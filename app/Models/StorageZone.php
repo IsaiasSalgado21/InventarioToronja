@@ -22,4 +22,11 @@ class StorageZone extends Model
     {
         return $this->hasMany(ItemLocation::class);
     }
+
+    public function presentations()
+    {
+        return $this->belongsToMany(Presentation::class, 'item_locations')
+                    ->withPivot('stored_quantity', 'occupied_m2', 'id')
+                    ->withTimestamps();
+    }
 }

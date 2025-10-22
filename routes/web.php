@@ -32,7 +32,6 @@ Route::middleware('auth')->group(function () {
     Route::view('/inventory', 'inventory')->name('inventory');
     Route::get('/inventory', [App\Http\Controllers\InventoryController::class, 'index'])->name('inventory');
     Route::get('/movements', [InventoryMovementController::class, 'index'])->name('movements');
-    Route::get('/storage', [StorageZoneController::class, 'dashboard'])->name('storage');
     Route::get('/management', [DashboardController::class, 'management'])->name('management');
     Route::view('/reports', 'reports')->name('reports');
     Route::Resource('users', UserController::class);
@@ -42,7 +41,7 @@ Route::middleware('auth')->group(function () {
     Route::Resource('presentations', PresentationController::class);
     Route::Resource('inventory-movements', InventoryMovementController::class);
     Route::Resource('price-histories', PriceHistoryController::class);
-    Route::Resource('storage-zones', StorageZoneController::class);
+    Route::resource('storage_zones', StorageZoneController::class);
     Route::Resource('item-locations', ItemLocationController::class);
 });
 
