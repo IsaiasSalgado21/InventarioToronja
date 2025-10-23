@@ -12,7 +12,7 @@
 <h5>Editar: {{ $zone->name }}</h5>
 </div>
 <div class="card-body">
-<form action="{{ route('storage_zones.update', $zone) }}" method="POST">
+<form action="{{ route('storage_zones.update', ['storage_zone' => $zone]) }}" method="POST">
 @csrf
 @method('PUT') <!-- Importante para la actualización -->
 

@@ -37,49 +37,49 @@ class StorageZoneController extends Controller
                          ->with('success', "Zona '{$zone->name}' creada con éxito.");
     }
 
-    public function show(StorageZone $zone)
+    public function show(StorageZone $storage_zone)
     {
-        $zone->loadSum('itemLocations', 'occupied_m2');
-        $zone->loadSum('itemLocations', 'stored_quantity');
+        $storage_zone->loadSum('itemLocations', 'occupied_m2');
+        $storage_zone->loadSum('itemLocations', 'stored_quantity');
 
         $locations = ItemLocation::with('presentation.item')
-                                 ->where('storage_zone_id', $zone->id)
+                                 ->where('storage_zone_id', $storage_zone->id)
                                  ->get();
         
-        return view('storage_zones.show', compact('zone', 'locations'));
+        return view('storage_zones.show', ['zone' => $storage_zone, 'locations' => $locations]); 
     }
 
-     public function edit(StorageZone $zone)
+     public function edit(StorageZone $storage_zone)
     {
-        return view('storage_zones.edit', compact('zone'));
+        return view('storage_zones.edit', ['zone' => $storage_zone]);
     }
 
-    public function update(Request $request, StorageZone $zone)
+    public function update(Request $request, StorageZone $storage_zone)
     {
         $data = $request->validate([
             'name' => [
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('storage_zones')->ignore($zone->id),
+                Rule::unique('storage_zones')->ignore($storage_zone->id),
             ],
             'description' => 'nullable|string',
             'dimension_x' => 'nullable|numeric|min:0',
             'dimension_y' => 'nullable|numeric|min:0',
             'capacity_m2' => 'nullable|numeric|min:0',
         ]);
-        $zone->update($data);
+        $storage_zone->update($data);
 
-        return redirect()->route('storage_zones.show', $zone->id)
-                         ->with('success', "Zona '{$zone->name}' actualizada con éxito.");
+        return redirect()->route('storage_zones.show', $storage_zone->id)
+                         ->with('success', "Zona '{$storage_zone->name}' actualizada con éxito.");
     }
 
-    public function destroy(StorageZone $zone)
+    public function destroy(StorageZone $storage_zone)
     {
-        $zone->delete();
+        $storage_zone->delete();
 
         return redirect()->route('storage_zones.index')
-                         ->with('success', "Zona '{$zone->name}' eliminada con éxito.");
+                         ->with('success', "Zona '{$storage_zone->name}' eliminada con éxito.");
     }
 
 }

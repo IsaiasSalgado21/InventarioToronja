@@ -28,8 +28,15 @@ class ItemLocation extends Model
         return $this->belongsTo(StorageZone::class);
     }
         
-    public function items()
+    public function item()
     {
-        return $this->hasMany(Item::class);
+        return $this->hasOneThrough(
+            Item::class,
+            Presentation::class,
+            'id', 
+            'id', 
+            'presentation_id',
+            'item_id'
+        );
     }
 }
