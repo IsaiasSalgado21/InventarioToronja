@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
@@ -24,6 +25,25 @@ class CategoryController extends Controller
         $category = Category::create($data);
 
         return response()->json(['message' => 'Category created', 'id' => $category->id]);
+    }
+
+    public function storeAjax(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:100|unique:categories,name',
+            'description' => 'nullable|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'errors' => $validator->errors()], 422); // 422 Unprocessable Entity
+        }
+
+        try {
+            $category = Category::create($validator->validated()); 
+            return response()->json(['success' => true, 'category' => $category]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to create category.'], 500); // Internal Server Error
+        }
     }
 
     public function show($id)

@@ -16,7 +16,7 @@ class ItemController extends Controller
     public function index()
     {
         $items = Item::with(['category', 'supplier', 'presentations.itemLocations.storageZone'])
-            ->latest('id') // orderBy('id', 'desc')
+            ->latest('id') 
             ->get();
 
         return view('items.index', compact('items'));
@@ -87,7 +87,7 @@ class ItemController extends Controller
                 }
                 return $item;
             });
-            return redirect()->route('items.index')
+            return redirect()->route('dashboard')
                          ->with('success', "Item creado correctamente (ID: {$item->id})");
 
         } catch (\Exception $e) {
@@ -103,7 +103,7 @@ class ItemController extends Controller
         ])->find($id);
 
         if (!$item) {
-            return redirect()->route('items.index')->with('error', 'Item no encontrado');
+            return redirect()->route('dashboard')->with('error', 'Item no encontrado');
         }
 
         return view('items.show', compact('item'));
@@ -113,7 +113,7 @@ class ItemController extends Controller
     $item = Item::find($id);
 
     if (!$item) {
-        return redirect()->route('items.index')->with('error', 'Item no encontrado');
+        return redirect()->route('dashboard')->with('error', 'Item no encontrado');
     }
 
     $categories = Category::orderBy('name')->get();
@@ -136,22 +136,22 @@ class ItemController extends Controller
         $item = Item::find($id);
 
         if (!$item) {
-            return redirect()->route('items.index')->with('error', 'No se pudo actualizar o el item no existe');
+            return redirect()->route('dashboard')->with('error', 'No se pudo actualizar o el item no existe');
         }
 
         $item->update($data);
 
-        return redirect()->route('items.show', $id)->with('success', 'Item actualizado correctamente');
+        return redirect()->route('dashboard', $id)->with('success', 'Item actualizado correctamente');
     }
 
     public function destroy($id)
     {
        $item =Item::find($id);
         if (!$item) {
-            return redirect()->route('items.index')->with('error', 'Item no encontrado');
+            return redirect()->route('dashboard')->with('error', 'Item no encontrado');
         }
         $item->delete(); 
 
-        return redirect()->route('items.index')->with('success', 'Item eliminado lógicamente');
+        return redirect()->route('dashboard')->with('success', 'Item eliminado lógicamente');
     }
 }

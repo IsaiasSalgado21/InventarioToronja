@@ -21,7 +21,7 @@ class DashboardController extends Controller
         $totalMovements = InventoryMovement::count();
 
         $items = Item::with('category', 'supplier', 'presentations')
-                        ->latest('id') // Es lo mismo que orderBy('id', 'desc')
+                        ->latest('id') 
                         ->get();
 
         return view('dashboard', compact(

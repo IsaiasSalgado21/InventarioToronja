@@ -19,4 +19,14 @@ class InventoryMovement extends Model
         'movement_date',
         'notes',
     ];
+
+    public function presentation()
+    {
+        return $this->belongsTo(Presentation::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

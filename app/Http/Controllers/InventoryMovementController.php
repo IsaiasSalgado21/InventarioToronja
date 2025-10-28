@@ -2,30 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\InventoryMovement;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class InventoryMovementController extends Controller
 {
     public function index()
     {
-        $movements = DB::table('inventory_movements as im')
-            ->join('presentations as p', 'im.presentation_id', '=', 'p.id')
-            ->join('users as u', 'im.user_id', '=', 'u.id')
-            ->whereNull('im.deleted_at')
-            ->whereNull('p.deleted_at')
-            ->whereNull('u.deleted_at')
-            ->select(
-                'im.id',
-                'im.type',
-                'im.quantity',
-                'im.notes',
-                'im.movement_date',
-                'p.sku as presentation_sku',
-                'p.description as presentation_description',
-                'u.name as user_name'
-            )
-            ->orderByDesc('im.movement_date')
+        $movements = InventoryMovement::with([
+                'presentation' => function ($query) {
+                    $query->select('id', 'sku', 'description');
+                },
+                'user' => function ($query) {
+                    $query->select('id', 'name');
+                }
+            ])
+            ->orderByDesc('movement_date')
             ->get();
 
         return view('movements', compact('movements'));
@@ -43,28 +35,19 @@ class InventoryMovementController extends Controller
         ]);
 
         $data['movement_date'] = $data['movement_date'] ?? now();
-        $data['created_at'] = now();
-        $data['updated_at'] = now();
 
-        $id = DB::table('inventory_movements')->insertGetId($data);
+        $movement = InventoryMovement::create($data);
 
-        return response()->json(['message' => 'Movement created', 'id' => $id]);
+        return response()->json(['message' => 'Movement created', 'id' => $movement->id]);
     }
 
     public function show($id)
     {
-        $movement = DB::table('inventory_movements as im')
-            ->join('presentations as p', 'im.presentation_id', '=', 'p.id')
-            ->join('users as u', 'im.user_id', '=', 'u.id')
-            ->where('im.id', $id)
-            ->whereNull('im.deleted_at')
-            ->select(
-                'im.*',
-                'p.sku as presentation_sku',
-                'p.description as presentation_description',
-                'u.name as user_name'
-            )
-            ->first();
+        $movement = InventoryMovement::with([
+                'presentation:id,sku,description',
+                'user:id,name'
+            ])
+            ->find($id);
 
         if (!$movement) {
             return response()->json(['message' => 'Movement not found'], 404);
@@ -84,29 +67,26 @@ class InventoryMovementController extends Controller
             'movement_date' => 'nullable|date',
         ]);
 
-        $data['updated_at'] = now();
+        $movement = InventoryMovement::find($id);
 
-        $updated = DB::table('inventory_movements')
-            ->where('id', $id)
-            ->whereNull('deleted_at')
-            ->update($data);
-
-        if (!$updated) {
+        if (!$movement) {
             return response()->json(['message' => 'Movement not found or deleted'], 404);
         }
+
+        $movement->update($data);
 
         return response()->json(['message' => 'Movement updated']);
     }
 
     public function destroy($id)
     {
-        $deleted = DB::table('inventory_movements')
-            ->where('id', $id)
-            ->update(['deleted_at' => now()]);
+        $movement = InventoryMovement::find($id);
 
-        if (!$deleted) {
+        if (!$movement) {
             return response()->json(['message' => 'Movement not found or already deleted'], 404);
         }
+
+        $movement->delete();
 
         return response()->json(['message' => 'Movement deleted (soft)']);
     }

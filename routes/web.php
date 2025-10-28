@@ -41,13 +41,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/management', [DashboardController::class, 'management'])->name('management');
     Route::view('/reports', 'reports')->name('reports');
     Route::Resource('users', UserController::class);
+    
     Route::Resource('categories', CategoryController::class);
+    Route::post('/categories/ajax-store', [CategoryController::class, 'storeAjax'])->name('categories.ajax.store');
+
     Route::Resource('suppliers', SupplierController::class);
+    Route::post('/suppliers/ajax-store', [SupplierController::class, 'storeAjax'])->name('suppliers.ajax.store');
+
     Route::Resource('items', ItemController::class);
     Route::Resource('presentations', PresentationController::class);
     Route::Resource('inventory-movements', InventoryMovementController::class);
     Route::Resource('price-histories', PriceHistoryController::class);
-    Route::resource('storage_zones', StorageZoneController::class);
+    Route::Resource('storage_zones', StorageZoneController::class);
     Route::Resource('item-locations', ItemLocationController::class);
 });
 

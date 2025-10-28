@@ -38,11 +38,11 @@
                                         <span class="badge bg-danger">Salida</span>
                                     @endif
                                 </td>
-                                <td>{{ $m->presentation_sku }}</td>
-                                <td>{{ $m->presentation_description }}</td>
+                                <td>{{ $m->presentation->sku ?? '-' }}</td>
+                                <td>{{ $m->presentation->description ?? '-' }}</td>
                                 <td>{{ $m->quantity }}</td>
                                 <td>{{ \Carbon\Carbon::parse($m->movement_date)->format('d/m/Y H:i') }}</td>
-                                <td>{{ $m->user_name ?? '—' }}</td>
+                                <td>{{ $m->user->name ?? '—' }}</td>
                                 <td>{{ $m->notes ?? '—' }}</td>
                             </tr>
                         @endforeach
