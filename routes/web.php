@@ -12,6 +12,7 @@ use App\Http\Controllers\PriceHistoryController;
 use App\Http\Controllers\StorageZoneController;
 use App\Http\Controllers\ItemLocationController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\InventoryController;
 
 Route::get('/', function () {
     return redirect()->route('login.form');
@@ -29,8 +30,13 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::view('/inventory', 'inventory')->name('inventory');
-    Route::get('/inventory', [App\Http\Controllers\InventoryController::class, 'index'])->name('inventory');
+    Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory');
+    
+    Route::get('/inventory/receive', [InventoryController::class, 'showReceiveForm'])->name('inventory.receive.form');
+    Route::post('/inventory/receive', [InventoryController::class, 'storeReceive'])->name('inventory.receive.store');
+    
+    Route::get('/inventory/transfer', [InventoryController::class, 'showTransferForm'])->name('inventory.transfer.form');
+    Route::post('/inventory/transfer', [InventoryController::class, 'storeTransfer'])->name('inventory.transfer.store');
     Route::get('/movements', [InventoryMovementController::class, 'index'])->name('movements');
     Route::get('/management', [DashboardController::class, 'management'])->name('management');
     Route::view('/reports', 'reports')->name('reports');

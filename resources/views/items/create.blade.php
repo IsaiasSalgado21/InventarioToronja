@@ -59,20 +59,6 @@
                 </select>
             </div>
 
-            {{-- Zona de almacenamiento (Storage Zone) --}}
-            <div class="mb-3">
-                <label class="form-label">Storage Zone</label>
-                <select name="storage_zone_id" class="form-select" required>
-                    <option value="">-- select zone --</option>
-                    @foreach($storageZones as $z)
-                        <option value="{{ $z->id }}" @selected(old('storage_zone_id') == $z->id)>
-                            {{ $z->name }}
-                        </option>
-                    @endforeach
-                </select>
-                <small class="text-muted">Select where this item will be stored physically.</small>
-            </div>
-
             {{-- Clasificación ABC --}}
             <div class="mb-3">
                 <label class="form-label">ABC Class</label>
