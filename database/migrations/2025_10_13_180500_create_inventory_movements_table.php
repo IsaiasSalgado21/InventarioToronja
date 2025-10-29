@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id(); 
             $table->unsignedBigInteger('presentation_id');
             $table->unsignedBigInteger('user_id')->nullable(); 
-            $table->enum('type', ['entry', 'exit'])->default('entry');
+            $table->string('type', 50);
             $table->integer('quantity');
             $table->timestamp('movement_date')->useCurrent();
             $table->text('notes')->nullable();

@@ -4,14 +4,22 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Presentation;
+use App\Models\Item;
+use Illuminate\Validation\Rule;
 
 class PresentationController extends Controller
 {
 
     public function index()
     {
-        $presentations = Presentation::with(['item.category', 'item.supplier'])->get();
-        return response()->json($presentations);
+        $presentations = Presentation::with('item')->latest('id')->paginate(15);
+        return view('presentations.index', compact('presentations'));
+    }
+
+    public function create()
+    {
+        $items = Item::orderBy('name')->get();
+        return view('presentations.create', compact('items'));
     }
 
     public function store(Request $request)
@@ -27,41 +35,53 @@ class PresentationController extends Controller
             'base_unit' => 'nullable|string|max:50',
         ]);
 
+        $data['stock_current'] = 0;
         $presentation = Presentation::create($data);
 
-        return response()->json(['message' => 'Presentation created', 'id' => $presentation->id]);
+        return redirect()->route('presentations.index')
+                         ->with('success', "Presentación '{$presentation->sku}' creada con éxito. Stock inicial es 0.");
     }
-    public function show($id)
+    public function show(Presentation $presentation)
     {
-        $presentation = Presentation::with(['item.category', 'item.supplier'])->findOrFail($id);
-        return response()->json($presentation);
+        $presentation->load('item.category', 'item.supplier', 'itemLocations.storageZone');
+        return view('presentations.show', compact('presentation'));
     }
 
-    public function update(Request $request, $id)
+    public function edit(Presentation $presentation)
     {
-        $presentation = Presentation::findOrFail($id);
+        $items = Item::orderBy('name')->get();
+        return view('presentations.edit', compact('presentation', 'items'));
+    }
 
+    public function update(Request $request, Presentation $presentation)
+    {
         $data = $request->validate([
-            'item_id' => 'sometimes|required|integer|exists:items,id',
-            'sku' => "sometimes|required|string|max:100|unique:presentations,sku,{$id}",
+            'item_id' => 'required|integer|exists:items,id',
+            'sku' => [
+                'required',
+                'string',
+                'max:100',
+                Rule::unique('presentations')->ignore($presentation->id), 
+            ],
             'description' => 'nullable|string|max:200',
             'units_per_presentation' => 'nullable|integer|min:1',
-            'stock_current' => 'nullable|integer|min:0',
             'stock_minimum' => 'nullable|integer|min:0',
             'unit_price' => 'nullable|numeric|min:0',
             'base_unit' => 'nullable|string|max:50',
         ]);
 
+        unset($data['stock_current']);
+
         $presentation->update($data);
-
-        return response()->json(['message' => 'Presentation updated']);
+        return redirect()->route('presentations.show', $presentation)
+                         ->with('success', "Presentación '{$presentation->sku}' actualizada con éxito.");
     }
-
-    public function destroy($id)
+    public function destroy(Presentation $presentation) 
     {
-        $presentation = Presentation::findOrFail($id);
-        $presentation->delete();
+        $sku = $presentation->sku; 
+        $presentation->delete(); 
 
-        return response()->json(['message' => 'Presentation deleted']);
+        return redirect()->route('inventory')
+                         ->with('success', "Presentación '{$sku}' eliminada con éxito.");
     }
 }

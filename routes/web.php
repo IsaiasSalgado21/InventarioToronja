@@ -49,6 +49,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/suppliers/ajax-store', [SupplierController::class, 'storeAjax'])->name('suppliers.ajax.store');
 
     Route::Resource('items', ItemController::class);
+    Route::post('/items/ajax-store', [ItemController::class, 'storeAjax'])->name('items.ajax.store');
+    
     Route::Resource('presentations', PresentationController::class);
     Route::Resource('inventory-movements', InventoryMovementController::class);
     Route::Resource('price-histories', PriceHistoryController::class);
