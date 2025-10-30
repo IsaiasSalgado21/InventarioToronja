@@ -98,6 +98,12 @@
                     @error('unit_price') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
 
+                <div class="mb-3">
+                    <label for="m2_per_unit" class="form-label">Espacio por Unidad (m²) - (Opcional)</label>
+                    <input type="number" step="0.0001" id="m2_per_unit" name="m2_per_unit" class="form-control" value="{{ old('m2_per_unit') }}" min="0">
+                    <small class="text-muted">Opcional: Si quieres rastrear el espacio físico, define cuántos m² ocupa UNA unidad.</small>
+                </div>
+
                 {{-- IMPORTANTE: No pedir stock inicial ni ubicación aquí --}}
                 <div class="alert alert-info small mt-4">
                     Nota: El stock inicial (cantidad) y la ubicación se asignan después, usando la opción "Recibir Stock" en la pantalla de Inventario.

@@ -20,6 +20,7 @@ class Presentation extends Model
         'stock_current',
         'stock_minimum',
         'unit_price',
+        'm2_per_unit',
     ];
 
     public function item()

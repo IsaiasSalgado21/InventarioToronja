@@ -32,18 +32,29 @@
                             <tr>
                                 <td>{{ $m->id }}</td>
                                 <td>
-                                    @if($m->type === 'entry')
-                                        <span class="badge bg-success">Entrada</span>
-                                    @else
+                                    @if($m->type === 'entrada')
+                                    <span class="badge bg-success">Entrada</span>
+                                
+                                    @elseif($m->type === 'transferencia')
+                                        <span class="badge bg-info">Transferencia</span>
+                                    
+                                    @elseif($m->type === 'salida') {{-- Asumiendo que tendrás un tipo 'salida' --}}
                                         <span class="badge bg-danger">Salida</span>
+                                    
+                                    @else {{-- Si es un tipo desconocido --}}
+                                        <span class="badge bg-secondary">{{ $m->type }}</span>
                                     @endif
                                 </td>
                                 <td>{{ $m->presentation->sku ?? '-' }}</td>
-                                <td>{{ $m->presentation->description ?? '-' }}</td>
-                                <td>{{ $m->quantity }}</td>
-                                <td>{{ \Carbon\Carbon::parse($m->movement_date)->format('d/m/Y H:i') }}</td>
-                                <td>{{ $m->user->name ?? '—' }}</td>
-                                <td>{{ $m->notes ?? '—' }}</td>
+                            <td>{{ $m->presentation->description ?? '-' }}</td>
+                            <td>
+                                <strong class="{{ $m->type === 'entrada' ? 'text-success' : ($m->type === 'salida' ? 'text-danger' : '') }}">
+                                    {{ $m->quantity }}
+                                </strong>
+                            </td>
+                            <td>{{ \Carbon\Carbon::parse($m->movement_date)->format('d/m/Y H:i') }}</td>
+                            <td>{{ $m->user->name ?? '—' }}</td>
+                            <td>{{ $m->notes ?? '—' }}</td>
                             </tr>
                         @endforeach
                     </tbody>

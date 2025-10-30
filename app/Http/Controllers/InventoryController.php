@@ -41,6 +41,15 @@ class InventoryController extends Controller
 
         try {
             DB::transaction(function () use ($data) {
+
+                $presentation = Presentation::find($data['presentation_id']);
+                if (!$presentation) {
+                    throw new \Exception('Presentación no encontrada.');
+                }
+
+                $m2PerUnit = $presentation->m2_per_unit ?? 0;
+                $calculated_occupied_m2 = $data['quantity'] * $m2PerUnit;
+
                 $location = ItemLocation::firstOrCreate(
                     [
                         'presentation_id' => $data['presentation_id'],
@@ -54,8 +63,8 @@ class InventoryController extends Controller
                 );
 
                 $location->increment('stored_quantity', $data['quantity']);
+                $location->increment('occupied_m2', $calculated_occupied_m2);
 
-                $presentation = Presentation::find($data['presentation_id']);
                 $presentation->increment('stock_current', $data['quantity']);
 
                 InventoryMovement::create([
@@ -71,7 +80,7 @@ class InventoryController extends Controller
             return back()->with('error', 'Error al recibir stock: ' . $e->getMessage())->withInput();
         }
 
-        return redirect()->route('inventory.index')
+        return redirect()->route('inventory')
                          ->with('success', 'Stock recibido con éxito.');
     }
 
@@ -95,6 +104,15 @@ class InventoryController extends Controller
 
         try {
             DB::transaction(function () use ($data) {
+
+                $presentation = Presentation::find($data['presentation_id']);
+                if (!$presentation) {
+                    throw new \Exception('Presentación no encontrada.');
+                }
+                
+                $m2PerUnit = $presentation->m2_per_unit ?? 0;
+                $space_to_move = $data['quantity'] * $m2PerUnit;
+
                 $locationOrigen = ItemLocation::where('presentation_id', $data['presentation_id'])
                                               ->where('storage_zone_id', $data['origin_zone_id'])
                                               ->first();
@@ -104,6 +122,7 @@ class InventoryController extends Controller
                 }
 
                 $locationOrigen->decrement('stored_quantity', $data['quantity']);
+                $locationOrigen->decrement('occupied_m2', $space_to_move);
 
                 $locationDestino = ItemLocation::firstOrCreate(
                     [
@@ -117,6 +136,7 @@ class InventoryController extends Controller
                     ]
                 );
                 $locationDestino->increment('stored_quantity', $data['quantity']);
+                $locationDestino->increment('occupied_m2', $space_to_move);
 
                 $originZoneName = StorageZone::find($data['origin_zone_id'])->name ?? 'ID '.$data['origin_zone_id'];
                 $destZoneName = StorageZone::find($data['dest_zone_id'])->name ?? 'ID '.$data['dest_zone_id'];
@@ -135,7 +155,7 @@ class InventoryController extends Controller
             return back()->with('error', 'Error al transferir stock: ' . $e->getMessage())->withInput();
         }
 
-        return redirect()->route('inventory.index')
+        return redirect()->route('inventory')
                          ->with('success', 'Transferencia realizada con éxito.');
     }
 }

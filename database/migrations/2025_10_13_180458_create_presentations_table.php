@@ -21,6 +21,7 @@ return new class extends Migration
         $table->integer('stock_current')->default(0);
         $table->integer('stock_minimum')->default(0);
         $table->decimal('unit_price', 12, 2)->default(0.00);
+        $table->decimal('m2_per_unit', 8, 4)->nullable()->default(null);
         $table->timestamps();
         $table->softDeletes();
     });

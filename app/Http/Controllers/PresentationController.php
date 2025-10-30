@@ -32,6 +32,7 @@ class PresentationController extends Controller
             'stock_current' => 'nullable|integer|min:0',
             'stock_minimum' => 'nullable|integer|min:0',
             'unit_price' => 'nullable|numeric|min:0',
+            'm2_per_unit' => 'nullable|numeric|min:0',
             'base_unit' => 'nullable|string|max:50',
         ]);
 
@@ -68,6 +69,7 @@ class PresentationController extends Controller
             'stock_minimum' => 'nullable|integer|min:0',
             'unit_price' => 'nullable|numeric|min:0',
             'base_unit' => 'nullable|string|max:50',
+            'm2_per_unit' => 'nullable|numeric|min:0',
         ]);
 
         unset($data['stock_current']);
