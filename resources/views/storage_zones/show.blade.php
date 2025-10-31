@@ -34,11 +34,53 @@
             $capacity = $zone->capacity_m2 ?? 1;
             $percentage = ($capacity > 0) ? ($occupied / $capacity) * 100 : 0;
             $totalUnits = $zone->item_locations_sum_stored_quantity ?? 0;
+
+            // Valores para la barra de UNIDADES
+            $capacityUnits = (int) ($zone->capacity_units ?? 0);
+            $unitsPercentage = ($capacityUnits > 0) ? min(100, ($totalUnits / $capacityUnits) * 100) : 0;
+            // color según porcentaje
+            if ($capacityUnits <= 0) {
+                $unitsBarClass = 'bg-light';
+                $unitsStatus = 'Sin límite';
+            } elseif ($totalUnits > $capacityUnits) {
+                $unitsBarClass = 'bg-danger progress-bar-striped progress-bar-animated';
+                $unitsStatus = 'Sobrecapacidad';
+            } elseif ($unitsPercentage >= 91) {
+                $unitsBarClass = 'bg-danger';
+                $unitsStatus = 'Crítico';
+            } elseif ($unitsPercentage >= 71) {
+                $unitsBarClass = 'bg-warning';
+                $unitsStatus = 'Advertencia';
+            } else {
+                $unitsBarClass = 'bg-success';
+                $unitsStatus = 'Suficiente';
+            }
         @endphp
 
+        <!-- BARRA: UNIDADES (stock) -->
+        <div class="mb-3">
+            <label class="form-label">Stock por Unidades</label>
+            @if($capacityUnits > 0)
+                <div class="d-flex justify-content-between mb-1">
+                    <small class="text-muted">{{ $totalUnits }} / {{ $capacityUnits }} unidades</small>
+                    <small class="text-muted">{{ number_format($unitsPercentage, 0) }}%</small>
+                </div>
+                <div class="progress" style="height: 18px;" title="{{ number_format($unitsPercentage,0) }}% ({{ $totalUnits }} / {{ $capacityUnits }})">
+                    <div class="progress-bar {{ $unitsBarClass }}" role="progressbar"
+                         style="width: {{ $unitsPercentage }}%;" aria-valuenow="{{ $unitsPercentage }}" aria-valuemin="0" aria-valuemax="100">
+                    </div>
+                </div>
+                <small class="text-muted">Estado: <strong>{{ $unitsStatus }}</strong></small>
+            @else
+                <p class="mb-1"><strong>{{ $totalUnits }}</strong> unidades</p>
+                <small class="text-muted">No se ha definido un límite de unidades para esta zona.</small>
+            @endif
+        </div>
+
+        <!-- BARRA: ESPACIO (m²) -->
         <label class="form-label">Capacidad Ocupada ({{ number_format($occupied, 2) }} / {{ number_format($capacity, 2) }} m²)</label>
-        <div class="progress" style="height: 20px;">
-            <div class="progress-bar" role="progressbar" style="width: {{ $percentage }}%;" aria-valuenow="{{ $occupied }}" aria-valuemin="0" aria-valuemax="{{ $capacity }}">
+        <div class="progress mb-2" style="height: 20px;">
+            <div class="progress-bar" role="progressbar" style="width: {{ min(100, $percentage) }}%;" aria-valuenow="{{ $occupied }}" aria-valuemin="0" aria-valuemax="{{ $capacity }}">
                 {{ number_format($percentage, 1) }}%
             </div>
         </div>

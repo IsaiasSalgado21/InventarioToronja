@@ -60,7 +60,7 @@
                             <td>{{ $location->presentation?->description ?? $location->presentation?->item?->name ?? 'N/A' }}</td>
                             <td>{{ $location->presentation?->item?->name ?? 'N/A' }}</td>
                             <td>{{ $location->presentation?->item?->category?->name ?? '-' }}</td>
-                            <td>{{ $location->presentation?->supplier?->name ?? '-' }}</td>
+                            <td>{{ $location->presentation?->item?->supplier?->name ?? '-' }}</td>
                             <td>
                                 <a href="{{ route('storage_zones.show', $location->storageZone) }}">
                                     {{ $location->storageZone?->name ?? 'N/A' }}
