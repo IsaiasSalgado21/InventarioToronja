@@ -17,7 +17,14 @@ class StorageZone extends Model
         'dimension_x',
         'dimension_y',
         'capacity_m2',
+        'capacity_units',
     ];
+
+    protected $casts = [
+        'capacity_m2' => 'float',
+        'capacity_units' => 'integer',
+    ];
+    
     public function itemLocations()
     {
         return $this->hasMany(ItemLocation::class);

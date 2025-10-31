@@ -18,6 +18,7 @@ return new class extends Migration
         $table->decimal('dimension_x', 6, 2)->default(0.00); // meters
         $table->decimal('dimension_y', 6, 2)->default(0.00); // meters
         $table->decimal('capacity_m2', 8, 2)->default(0.00);
+        $table->integer('capacity_units')->nullable()->default(null);
         $table->timestamps();
         $table->softDeletes();
     });

@@ -56,6 +56,16 @@
                         </div>
                     </div>
 
+                    <div class="mb-3">
+                        <label for="capacity_units" class="form-label">Límite de Unidades (Opcional)</label>
+                        <input type="number" id="capacity_units" name="capacity_units" class="form-control @error('capacity_units') is-invalid @enderror"
+                               value="{{ old('capacity_units', $zone->capacity_units ?? '') }}" min="0" step="1">
+                        <small class="text-muted">Opcional: Límite total de unidades (piezas, cajas, etc.) que caben aquí.</small>
+                        @error('capacity_units')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
                     <a href="{{ route('storage_zones.index') }}" class="btn btn-secondary">Cancelar</a>
                     <button type="submit" class="btn btn-primary">Actualizar Zona</button>
                 </form>
