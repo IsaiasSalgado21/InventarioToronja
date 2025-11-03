@@ -24,7 +24,7 @@
                 <li class="nav-item"><a class="nav-link" href="{{ route('inventory') }}">Inventario</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('movements') }}">Movimientos</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('storage_zones.index') }}">Almacen</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('management') }}">Management</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('suppliers.index') }}">proveedores</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('reports') }}">Reports</a></li>
             </ul>
             <ul class="navbar-nav ms-auto">
@@ -46,16 +46,20 @@
 <div class="container py-4">
     @if(session('success'))
         <div class="alert alert-success text-center">
+            {{ session('success') }}
         </div>
     @endif
 
     @if(session('error'))
         <div class="alert alert-danger text-center">
+            {{ session('error') }}
         </div>
     @endif
     @yield('content')
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    {{-- Scripts empujados por las vistas (ej. @push('scripts')) --}}
+    @stack('scripts')
 </body>
 </html>

@@ -15,6 +15,8 @@ class Presentation extends Model
         'item_id',
         'sku',
         'description',
+        'archetype',
+        'quality',
         'units_per_presentation',
         'base_unit',
         'stock_current',

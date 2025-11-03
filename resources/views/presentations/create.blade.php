@@ -61,7 +61,22 @@
                      <small class="text-muted">Ej: Camisa Negra Talla M, Caja 36 Tazas Blancas Sublimables</small>
                     @error('description') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
-
+                <div class="row">
+                    {{-- Arquetipo --}}
+                    <div class="col-md-6 mb-3">
+                        <label for="archetype" class="form-label">Arquetipo *</label>
+                        <input type="text" id="archetype" name="archetype" class="form-control @error('archetype') is-invalid @enderror" value="{{ old('archetype') }}" required>
+                         <small class="text-muted">Ej: Camisa Polo, Taza Blanca, Vinil Adhesivo</small>
+                    </div>
+                </div>
+                <div class="row">
+                    {{-- Calidad --}}
+                    <div class="col-md-6 mb-3">
+                        <label for="quality" class="form-label">Calidad *</label>
+                        <input type="text" id="quality" name="quality" class="form-control @error('quality') is-invalid @enderror" value="{{ old('quality') }}" required>
+                         <small class="text-muted">Ej: Premium, Estándar, Económica</small>
+                    </div>
+                </div>
                  <div class="row">
                      {{-- Unidades por Presentación --}}
                     <div class="col-md-4 mb-3">
@@ -148,11 +163,6 @@
                         <textarea class="form-control" id="item_description" name="description" rows="2"></textarea>
                     </div>
 
-                    {{-- Aquí podrías poner selects para Category y Supplier si quieres crearlos desde aquí también --}}
-                    {{-- Si los pones, necesitarías pasar $categories y $suppliers a esta vista --}}
-                    {{-- y añadir la lógica JS para sus propios modales (anidado) --}}
-
-                    {{-- Ejemplo simple (asumiendo que existen): --}}
                      <div class="mb-3">
                          <label for="item_category_id" class="form-label">Categoría</label>
                          <select id="item_category_id" name="category_id" class="form-select">
@@ -255,7 +265,6 @@
             itemForm.reset();
         });
 
-        // Aquí podrías añadir la lógica para los modales anidados de Category/Supplier si los implementas
     });
 </script>
 @endpush

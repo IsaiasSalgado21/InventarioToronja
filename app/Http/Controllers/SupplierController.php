@@ -11,10 +11,8 @@ class SupplierController extends Controller
 
     public function index()
     {
-    
-        $suppliers = Supplier::all();
-
-        return response()->json($suppliers);
+        $suppliers = Supplier::paginate(10);
+        return view('suppliers.index', compact('suppliers'));
     }
 
     public function store(Request $request)

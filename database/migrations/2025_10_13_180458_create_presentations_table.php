@@ -16,6 +16,8 @@ return new class extends Migration
         $table->unsignedBigInteger('item_id');
         $table->string('sku', 100)->unique();
         $table->string('description', 200)->nullable();
+        $table->string('archetype', 100);
+        $table->string('quality', 100)->nullable();
         $table->integer('units_per_presentation')->default(1);
         $table->string('base_unit', 50)->nullable(); 
         $table->integer('stock_current')->default(0);

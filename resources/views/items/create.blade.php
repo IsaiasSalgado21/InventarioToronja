@@ -6,7 +6,7 @@
 <div class="container py-4">
     <div class="card shadow-sm">
         <div class="card-body">
-            <h4 class="mb-3">Add New Item</h4>
+            <h4 class="mb-3">Añadir Nuevo Item</h4>
 
             {{-- Mostrar errores de validación del formulario principal --}}
             @if ($errors->any())
@@ -25,21 +25,21 @@
 
                 {{-- Nombre del producto --}}
                 <div class="mb-3">
-                    <label for="name" class="form-label">Name *</label>
+                    <label for="name" class="form-label">Nombre</label>
                     <input type="text" id="name" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" required>
                     @error('name') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
 
                 {{-- Descripción --}}
                 <div class="mb-3">
-                    <label for="description" class="form-label">Description</label>
+                    <label for="description" class="form-label">Descripcion</label>
                     <textarea id="description" name="description" class="form-control @error('description') is-invalid @enderror" rows="3">{{ old('description') }}</textarea>
                     @error('description') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
-
+    
                 {{-- Categoría --}}
                 <div class="mb-3">
-                    <label for="category_id_select" class="form-label">Category</label>
+                    <label for="category_id_select" class="form-label">Categoria</label>
                     <div class="input-group">
                         <select id="category_id_select" name="category_id" class="form-select @error('category_id') is-invalid @enderror">
                             <option value="">-- none --</option>
@@ -60,7 +60,7 @@
 
                 {{-- Proveedor --}}
                 <div class="mb-3">
-                    <label for="supplier_id_select" class="form-label">Supplier</label>
+                    <label for="supplier_id_select" class="form-label">Proveedor</label>
                     <div class="input-group">
                         <select id="supplier_id_select" name="supplier_id" class="form-select @error('supplier_id') is-invalid @enderror">
                             <option value="">-- none --</option>
@@ -81,7 +81,7 @@
 
                 {{-- Clasificación ABC --}}
                 <div class="mb-3">
-                    <label for="abc_class" class="form-label">ABC Class</label>
+                    <label for="abc_class" class="form-label">ABC Clasificacion</label>
                     <select id="abc_class" name="abc_class" class="form-select @error('abc_class') is-invalid @enderror">
                         <option value="">-- none --</option>
                         <option value="A" @selected(old('abc_class')=='A')>A</option>
@@ -93,30 +93,31 @@
 
                 {{-- Fecha de expiración --}}
                 <div class="mb-3">
-                    <label for="expiry_date" class="form-label">Expiry Date</label>
+                    <label for="expiry_date" class="form-label">Fecha de Caducidad</label>
                     <input type="date" id="expiry_date" name="expiry_date" class="form-control @error('expiry_date') is-invalid @enderror" value="{{ old('expiry_date') }}">
                     @error('expiry_date') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
 
                 {{-- Botones --}}
                 <div class="d-flex gap-2 mt-4">
-                    <a href="{{ route('dashboard') }}" class="btn btn-secondary">Cancel</a>
-                    <button type="submit" class="btn btn-success">Save Item</button>
+                    <a href="{{ route('dashboard') }}" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-success">Guardar</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+</div> {{-- Cierre del container --}}
 
 {{-- ---------------------------------------------------------------------- --}}
-{{-- MODALES PARA CREACIÓN RÁPIDA (Deben estar fuera del form principal)   --}}
+{{-- MODALES PARA CREACIÓN RÁPIDA (Fuera de containers/forms)              --}}
 {{-- ---------------------------------------------------------------------- --}}
 
 <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addCategoryModalLabel">Add New Category</h5>
+                <h5 class="modal-title" id="addCategoryModalLabel">Nueva categoria</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -125,19 +126,15 @@
                     @csrf {{-- ¡Importante para la petición AJAX! --}}
                     <div class="alert alert-danger d-none" id="categoryErrors"></div> {{-- Para mostrar errores --}}
                     <div class="mb-3">
-                        <label for="category_name" class="form-label">Name *</label>
+                        <label for="category_name" class="form-label">Nombre</label>
                         <input type="text" class="form-control" id="category_name" name="name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="category_description" class="form-label">Description</label>
-                        <textarea class="form-control" id="category_description" name="description" rows="3"></textarea>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 {{-- Botón que activará el AJAX vía JavaScript --}}
-                <button type="button" class="btn btn-primary" id="saveCategoryBtn">Save Category</button>
+                <button type="button" class="btn btn-primary" id="saveCategoryBtn">Guardar</button>
             </div>
         </div>
     </div>
@@ -147,33 +144,43 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addSupplierModalLabel">Add New Supplier</h5>
+                <h5 class="modal-title" id="addSupplierModalLabel">Añadir proveedor</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                {{-- Formulario dentro del modal --}}
                 <form id="addSupplierForm">
-                    @csrf {{-- ¡Importante para la petición AJAX! --}}
-                    <div class="alert alert-danger d-none" id="supplierErrors"></div> {{-- Para mostrar errores --}}
+                    @csrf
+                    <div class="alert alert-danger d-none" id="supplierErrors"></div>
                     <div class="mb-3">
-                        <label for="supplier_name" class="form-label">Name *</label>
+                        <label for="supplier_name" class="form-label">Nombre *</label>
                         <input type="text" class="form-control" id="supplier_name" name="name" required>
                     </div>
                     <div class="mb-3">
-                        <label for="supplier_contact" class="form-label">Contact</label>
+                        <label for="supplier_contact" class="form-label">Contacto</label>
                         <input type="text" class="form-control" id="supplier_contact" name="contact">
                     </div>
-                    {{-- Puedes añadir más campos si quieres (phone, email, address) --}}
+                    <div class="mb-3">
+                        <label for="supplier_phone" class="form-label">Numero Telefonico</label>
+                        <input type="text" class="form-control" id="supplier_phone" name="phone">
+                    </div>
+                    <div class="mb-3">
+                        <label for="supplier_email" class="form-label">Correo electronico</label>
+                        <input type="email" class="form-control" id="supplier_email" name="email">
+                    </div>
+                    <div class="mb-3">
+                        <label for="supplier_address" class="form-label">Direccion</label>
+                        <textarea class="form-control" id="supplier_address" name="address" rows="2"></textarea>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                {{-- Botón que activará el AJAX vía JavaScript --}}
-                <button type="button" class="btn btn-primary" id="saveSupplierBtn">Save Supplier</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="saveSupplierBtn">Guardar</button>
             </div>
         </div>
     </div>
 </div>
+
 @endsection
 
 {{-- ---------------------------------------------------------------------- --}}
@@ -321,4 +328,4 @@
 
     });
 </script>
-@end
+@endpush
