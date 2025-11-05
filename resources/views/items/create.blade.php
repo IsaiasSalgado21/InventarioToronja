@@ -58,27 +58,6 @@
                     </div>
                 </div>
 
-                {{-- Proveedor --}}
-                <div class="mb-3">
-                    <label for="supplier_id_select" class="form-label">Proveedor</label>
-                    <div class="input-group">
-                        <select id="supplier_id_select" name="supplier_id" class="form-select @error('supplier_id') is-invalid @enderror">
-                            <option value="">-- none --</option>
-                            {{-- La variable $suppliers viene del ItemController@create --}}
-                            @foreach($suppliers as $s)
-                                <option value="{{ $s->id }}" @selected(old('supplier_id') == $s->id)>
-                                    {{ $s->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                        {{-- Botón para abrir el modal de proveedor --}}
-                        <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#addSupplierModal" title="Add New Supplier">
-                            <i class="bi bi-plus-lg"></i> +
-                        </button>
-                        @error('supplier_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                    </div>
-                </div>
-
                 {{-- Clasificación ABC --}}
                 <div class="mb-3">
                     <label for="abc_class" class="form-label">ABC Clasificacion</label>
@@ -140,46 +119,6 @@
     </div>
 </div>
 
-<div class="modal fade" id="addSupplierModal" tabindex="-1" aria-labelledby="addSupplierModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addSupplierModalLabel">Añadir proveedor</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="addSupplierForm">
-                    @csrf
-                    <div class="alert alert-danger d-none" id="supplierErrors"></div>
-                    <div class="mb-3">
-                        <label for="supplier_name" class="form-label">Nombre *</label>
-                        <input type="text" class="form-control" id="supplier_name" name="name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="supplier_contact" class="form-label">Contacto</label>
-                        <input type="text" class="form-control" id="supplier_contact" name="contact">
-                    </div>
-                    <div class="mb-3">
-                        <label for="supplier_phone" class="form-label">Numero Telefonico</label>
-                        <input type="text" class="form-control" id="supplier_phone" name="phone">
-                    </div>
-                    <div class="mb-3">
-                        <label for="supplier_email" class="form-label">Correo electronico</label>
-                        <input type="email" class="form-control" id="supplier_email" name="email">
-                    </div>
-                    <div class="mb-3">
-                        <label for="supplier_address" class="form-label">Direccion</label>
-                        <textarea class="form-control" id="supplier_address" name="address" rows="2"></textarea>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" id="saveSupplierBtn">Guardar</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 @endsection
 
@@ -256,76 +195,6 @@
             categoryErrorsDiv.innerHTML = '';
             categoryForm.reset();
         });
-
-
-        const supplierModalElement = document.getElementById('addSupplierModal');
-        const supplierModal = new bootstrap.Modal(supplierModalElement);
-        const supplierForm = document.getElementById('addSupplierForm');
-        const saveSupplierBtn = document.getElementById('saveSupplierBtn');
-        const supplierSelect = document.getElementById('supplier_id_select');
-        const supplierErrorsDiv = document.getElementById('supplierErrors');
-
-        saveSupplierBtn.addEventListener('click', function () {
-            const formData = new FormData(supplierForm);
-            const csrfToken = supplierForm.querySelector('input[name="_token"]').value;
-
-            supplierErrorsDiv.classList.add('d-none');
-            supplierErrorsDiv.innerHTML = '';
-
-            fetch('{{ route("suppliers.ajax.store") }}', { // Usa la ruta AJAX de supplier
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken,
-                    'Accept': 'application/json',
-                },
-                body: formData
-            })
-            .then(response => { // Check if response is ok
-                 if (!response.ok) {
-                     return response.json().then(errorData => {
-                         throw { status: response.status, data: errorData };
-                     });
-                 }
-                 return response.json();
-            })
-            .then(data => {
-                if (data.success && data.supplier) {
-                    const newOption = new Option(data.supplier.name, data.supplier.id, false, true);
-                    supplierSelect.appendChild(newOption);
-                    supplierSelect.value = data.supplier.id;
-                    supplierForm.reset();
-                    supplierModal.hide();
-                } else {
-                    supplierErrorsDiv.innerHTML = data.message || 'An unexpected error occurred.';
-                    supplierErrorsDiv.classList.remove('d-none');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                let errorMsg = 'Request failed. Please check console.';
-                 if (error.status === 422 && error.data && error.data.errors) {
-                    let errorHtml = '<ul>';
-                    for (const field in error.data.errors) {
-                        error.data.errors[field].forEach(errMsg => {
-                            errorHtml += `<li>${errMsg}</li>`;
-                        });
-                    }
-                    errorHtml += '</ul>';
-                    errorMsg = errorHtml;
-                 } else if (error.data && error.data.message) {
-                     errorMsg = error.data.message;
-                 }
-                supplierErrorsDiv.innerHTML = errorMsg;
-                supplierErrorsDiv.classList.remove('d-none');
-            });
-        });
-
-        supplierModalElement.addEventListener('hidden.bs.modal', function () {
-            supplierErrorsDiv.classList.add('d-none');
-            supplierErrorsDiv.innerHTML = '';
-            supplierForm.reset();
-        });
-
     });
 </script>
 @endpush

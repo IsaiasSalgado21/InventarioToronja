@@ -35,7 +35,9 @@ class InventoryController extends Controller
         $data = $request->validate([
             'presentation_id' => 'required|integer|exists:presentations,id',
             'storage_zone_id' => 'required|integer|exists:storage_zones,id',
+            'supplier_id'     => 'required|integer|exists:suppliers,id',
             'quantity'        => 'required|integer|min:1',
+            'total_cost'      => 'required|numeric|min:0',
             'notes'           => 'nullable|string|max:255',
         ]);
 
@@ -65,15 +67,22 @@ class InventoryController extends Controller
                 $location->increment('stored_quantity', $data['quantity']);
                 $location->increment('occupied_m2', $calculated_occupied_m2);
 
+                // Calcular el costo unitario
+                $unit_cost = $data['total_cost'] / $data['quantity'];
+
+                // Actualizar el stock y el precio unitario de la presentación
                 $presentation->increment('stock_current', $data['quantity']);
+                $presentation->update(['unit_price' => $unit_cost]); // Esto disparará el Observer
 
                 InventoryMovement::create([
                     'presentation_id' => $data['presentation_id'],
-                    'user_id'         => Auth::id(),
-                    'type'            => 'entrada',
-                    'quantity'        => $data['quantity'],
-                    'notes'           => $data['notes'],
-                    'movement_date'   => now(),
+                    'user_id'        => Auth::id(),
+                    'type'           => 'entrada',
+                    'quantity'       => $data['quantity'],
+                    'supplier_id'    => $data['supplier_id'],
+                    'unit_cost'      => $unit_cost,
+                    'notes'          => $data['notes'],
+                    'movement_date'  => now(),
                 ]);
             });
         } catch (\Exception $e) {

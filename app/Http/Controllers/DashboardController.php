@@ -20,7 +20,7 @@ class DashboardController extends Controller
         $totalSuppliers = Supplier::count();
         $totalMovements = InventoryMovement::count();
 
-        $items = Item::with('category', 'supplier', 'presentations')
+        $items = Item::with('category', 'presentations')
                         ->latest('id') 
                         ->get();
 

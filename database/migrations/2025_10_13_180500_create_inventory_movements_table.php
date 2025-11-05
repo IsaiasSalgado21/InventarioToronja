@@ -17,6 +17,8 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->nullable(); 
             $table->string('type', 50);
             $table->integer('quantity');
+            $table->unsignedBigInteger('supplier_id')->nullable(); 
+            $table->decimal('unit_cost', 12, 2)->nullable(); 
             $table->timestamp('movement_date')->useCurrent();
             $table->text('notes')->nullable();
             $table->timestamps();

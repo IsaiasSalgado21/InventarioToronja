@@ -55,7 +55,6 @@
                         <th>ID</th>
                         <th>Nombre</th>
                         <th>Categoría</th>
-                        <th>Proveedor</th>
                         <th>Stock Total</th>
                         <th>Acciones</th>
                     </tr>
@@ -66,7 +65,6 @@
                         <td>{{ $item->id }}</td>
                         <td>{{ $item->name }}</td>
                         <td>{{ $item->category->name ?? '-' }}</td>
-                        <td>{{ $item->supplier->name ?? '-' }}</td>
                         <td>{{ $item->stock_total }}</td>
                         <td>
                             <a href="{{ route('items.show', $item->id) }}" class="btn btn-info btn-sm">Ver</a>

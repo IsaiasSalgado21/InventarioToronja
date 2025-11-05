@@ -16,7 +16,7 @@ class Item extends Model
         'name',
         'description',
         'category_id',
-        'supplier_id',
+    //  'supplier_id',
         'abc_class',
         'expiry_date',
     ];
@@ -24,10 +24,12 @@ class Item extends Model
     {
         return $this->belongsTo(Category::class);
     }
+    /*
     public function supplier()
     {
         return $this->belongsTo(Supplier::class);
     }
+    */
     public function presentations()
     {
         return $this->hasMany(Presentation::class);

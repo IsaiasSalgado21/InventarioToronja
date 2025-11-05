@@ -13,7 +13,7 @@ class ItemController extends Controller
 {
     public function index()
     {
-        $items = Item::with(['category', 'supplier', 'presentations.itemLocations.storageZone'])
+        $items = Item::with(['category', 'presentations.itemLocations.storageZone'])
             ->latest('id') 
             ->get();
 
@@ -34,7 +34,6 @@ class ItemController extends Controller
             'name' => 'required|string|max:200|unique:items,name', 
             'description' => 'nullable|string',
             'category_id' => 'nullable|integer|exists:categories,id',
-            'supplier_id' => 'nullable|integer|exists:suppliers,id',
             'abc_class' => 'nullable|in:A,B,C',
             'expiry_date' => 'nullable|date', 
         ]);
@@ -55,7 +54,6 @@ class ItemController extends Controller
             'name' => 'required|string|max:200|unique:items,name',
             'description' => 'nullable|string',
             'category_id' => 'nullable|integer|exists:categories,id',
-            'supplier_id' => 'nullable|integer|exists:suppliers,id',
         ]);
 
         if ($validator->fails()) {

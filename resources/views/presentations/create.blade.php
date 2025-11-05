@@ -228,7 +228,7 @@
                  }
                  return response.json();
             })
-            .then(data => {
+            .then data => {
                 if (data.success && data.item) {
                     const newItem = data.item;
                     const newOption = new Option(newItem.name, newItem.id, false, true); // text, value, defaultSelected, selected

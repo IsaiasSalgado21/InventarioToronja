@@ -18,6 +18,8 @@ class InventoryMovement extends Model
         'quantity',
         'movement_date',
         'notes',
+        'supplier_id',
+        'unit_cost',
     ];
 
     public function presentation()
@@ -28,5 +30,9 @@ class InventoryMovement extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class);
     }
 }

@@ -13,6 +13,7 @@ use App\Http\Controllers\StorageZoneController;
 use App\Http\Controllers\ItemLocationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\ReportController;
 
 Route::get('/', function () {
     return redirect()->route('login.form');
@@ -40,6 +41,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/movements', [InventoryMovementController::class, 'index'])->name('movements');
     Route::get('/management', [DashboardController::class, 'management'])->name('management');
     Route::view('/reports', 'reports')->name('reports');
+    Route::get('/reports/price-comparison', [ReportController::class, 'priceComparison'])->name('reports.price-comparison');
     Route::Resource('users', UserController::class);
     
     Route::Resource('categories', CategoryController::class);

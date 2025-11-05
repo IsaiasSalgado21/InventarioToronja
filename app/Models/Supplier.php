@@ -13,8 +13,15 @@ class Supplier extends Model
 
     protected $fillable = ['name', 'contact', 'phone', 'email', 'address'];
 
+
+    public function inventoryMovements()
+    {
+        return $this->hasMany(InventoryMovement::class);
+    }
+    /*
     public function items()
     {
         return $this->hasMany(Item::class);
     }
+    */
 }

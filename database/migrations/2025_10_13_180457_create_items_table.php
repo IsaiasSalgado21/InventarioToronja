@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name', 200);
             $table->text('description')->nullable();
             $table->unsignedBigInteger('category_id')->nullable();
-            $table->unsignedBigInteger('supplier_id')->nullable();
+        //  $table->unsignedBigInteger('supplier_id')->nullable();
             $table->char('abc_class', 1)->nullable(); // A, B or C
             $table->date('expiry_date')->nullable();
             $table->timestamp('created_at')->useCurrent();
