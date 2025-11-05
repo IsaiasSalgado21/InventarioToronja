@@ -46,7 +46,7 @@ class PresentationController extends Controller
     }
     public function show(Presentation $presentation)
     {
-        $presentation->load('item.category', 'item.supplier', 'itemLocations.storageZone');
+        $presentation->load('item.category', 'itemLocations.storageZone');
         return view('presentations.show', compact('presentation'));
     }
 

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('price_histories', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('presentation_id');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->decimal('old_price', 12, 2)->nullable();
             $table->decimal('new_price', 12, 2)->nullable();
             $table->timestamp('changed_at')->useCurrent();

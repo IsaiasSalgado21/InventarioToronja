@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\Models\StorageZone;
 use App\Observers\StorageZoneObserver;
+use App\Models\Presentation;
+use App\Observers\PresentationObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,5 +24,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         StorageZone::observe(StorageZoneObserver::class);
+        Presentation::observe(PresentationObserver::class);
     }
 }

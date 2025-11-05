@@ -70,8 +70,7 @@ class ItemController extends Controller
     public function show($id)
     {
         $item = Item::with([
-            'category', 
-            'supplier', 
+            'category',
             'presentations.itemLocations.storageZone' 
         ])->find($id);
 

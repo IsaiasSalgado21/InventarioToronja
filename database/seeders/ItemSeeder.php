@@ -3,37 +3,34 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use App\Models\Item;
+use App\Models\Category;
 
 class ItemSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('items')->insert([
-            [
-                'name' => 'Taza Blanca 11oz',
-                'description' => 'Taza para sublimación de 11oz',
-                'category_id' => 1,
-                'supplier_id' => 1,
-                'abc_class' => 'A',  
-                'expiry_date' => null
-            ],
-            [
-                'name' => 'Camisa Polo Negra',
-                'description' => 'Camisa de algodón para bordado',
-                'category_id' => 2,
-                'supplier_id' => 3,
-                'abc_class' => 'B',  
-                'expiry_date' => null
-            ],
-            [
-                'name' => 'Vinil Adhesivo',
-                'description' => 'Vinil blanco adhesivo 50cm x 1m',
-                'category_id' => 4,
-                'supplier_id' => 2,
-                'abc_class' => 'A', 
-                'expiry_date' => null
-            ]
+        // Obtenemos los IDs de las categorías que ya creamos
+        $catTazas = Category::where('name', 'Tazas')->first()->id;
+        $catTextiles = Category::where('name', 'Textiles')->first()->id;
+        $catViniles = Category::where('name', 'Viniles')->first()->id;
+
+        Item::create([
+            'name' => 'Taza Blanca 11oz',
+            'description' => 'Taza de cerámica blanca para sublimación.',
+            'category_id' => $catTazas
+        ]);
+        
+        Item::create([
+            'name' => 'Playera Polo',
+            'description' => 'Playera tipo polo de algodón.',
+            'category_id' => $catTextiles
+        ]);
+
+        Item::create([
+            'name' => 'Vinil Adhesivo Brillante',
+            'description' => 'Rollo de vinil adhesivo permanente.',
+            'category_id' => $catViniles
         ]);
     }
 }

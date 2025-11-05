@@ -11,7 +11,6 @@
     <div class="card-body">
         <p><strong>Descripción:</strong> {{ $item->description ?? '-' }}</p>
         <p><strong>Categoría:</strong> {{ $item->category->name ?? '-' }}</p>
-        <p><strong>Proveedor:</strong> {{ $item->supplier->name ?? '-' }}</p>
         <p><strong>Clase ABC:</strong> {{ $item->abc_class ?? '-' }}</p>
         <p><strong>Fecha Expiración:</strong> {{ $item->expiry_date ?? '-' }}</p>
         <p><strong>Stock Total (todas las presentaciones):</strong> {{ $item->stock_total }}</p>

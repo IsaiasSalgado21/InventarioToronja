@@ -32,6 +32,23 @@
             </div>
         </div>
 
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <div class="mb-3">
+                        <i class="bi bi-cash-coin" style="font-size: 2rem; color: var(--bs-success);"></i>
+                    </div>
+                    <h5 class="card-title">Análisis de Márgenes</h5>
+                    <p class="card-text text-muted small flex-grow-1">
+                        Compara el precio de venta de tus productos con su costo promedio para ver la rentabilidad.
+                    </p>
+                    <a href="{{ route('reports.margin-analysis') }}" class="btn btn-primary mt-auto">
+                        Generar Reporte
+                    </a>
+                </div>
+            </div>
+        </div>
+
         <!-- Opción 2: Placeholder para un futuro reporte -->
         <div class="col">
             <div class="card h-100 shadow-sm">

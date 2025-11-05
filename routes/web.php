@@ -40,8 +40,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/inventory/transfer', [InventoryController::class, 'storeTransfer'])->name('inventory.transfer.store');
     Route::get('/movements', [InventoryMovementController::class, 'index'])->name('movements');
     Route::get('/management', [DashboardController::class, 'management'])->name('management');
+
     Route::view('/reports', 'reports')->name('reports');
     Route::get('/reports/price-comparison', [ReportController::class, 'priceComparison'])->name('reports.price-comparison');
+    Route::get('/reports/margin-analysis', [ReportController::class, 'marginAnalysis'])->name('reports.margin-analysis');
+    
     Route::Resource('users', UserController::class);
     
     Route::Resource('categories', CategoryController::class);

@@ -67,4 +67,58 @@ class ReportController extends Controller
             'selectedPresentationId'
         ));
     }
+    public function marginAnalysis(Request $request)
+    {
+        $presentations = Presentation::with('item')
+            // Carga el PRECIO DE VENTA (de la tabla presentations)
+            ->select('id', 'item_id', 'sku', 'description', 'unit_price', 'stock_current') 
+
+            // Carga el COSTO PROMEDIO (calculado de inventory_movements)
+            ->withAvg(
+                // Solo promedia los movimientos de 'entrada' que tienen costo
+                ['inventoryMovements' => fn ($query) => $query->where('type', 'entrada')->where('unit_cost', '>', 0)],
+                'unit_cost'
+            )
+
+            // Carga el COSTO TOTAL (Costo Promedio * Stock Actual)
+            ->withSum(
+                ['inventoryMovements' => fn ($query) => $query->where('type', 'entrada')->where('unit_cost', '>', 0)],
+                'unit_cost' // Esto es un truco, lo ajustaremos abajo
+            )
+            ->paginate(20);
+
+        // Calculamos los totales en el backend
+        $totalValorVenta = 0;
+        $totalValorCosto = 0;
+
+        foreach ($presentations as $p) {
+            // El costo promedio ya viene cargado por withAvg
+            $costoPromedio = $p->inventory_movements_avg_unit_cost ?? 0;
+
+            // Calculamos la ganancia por unidad
+            $p->ganancia_por_unidad = $p->unit_price - $costoPromedio;
+
+            // Calculamos el margen en %
+            $p->margen_porcentaje = ($p->unit_price > 0) 
+                                    ? ($p->ganancia_por_unidad / $p->unit_price) * 100
+                                    : 0;
+
+            // Calculamos el valor total de este stock
+            $p->valor_total_venta = $p->unit_price * $p->stock_current;
+            $p->valor_total_costo = $costoPromedio * $p->stock_current;
+
+            // Sumamos a los totales generales
+            $totalValorVenta += $p->valor_total_venta;
+            $totalValorCosto += $p->valor_total_costo;
+        }
+
+        $totalGananciaPotencial = $totalValorVenta - $totalValorCosto;
+
+        return view('reports.margin_analysis', compact(
+            'presentations', 
+            'totalValorVenta', 
+            'totalValorCosto', 
+            'totalGananciaPotencial'
+        ));
+    }
 }
