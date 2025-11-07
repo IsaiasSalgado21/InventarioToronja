@@ -49,6 +49,21 @@
             </div>
         </div>
 
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <!-- ... (icono, etc.) ... -->
+                    <h5 class="card-title">Reporte de Movimientos (Salidas/Mermas)</h5>
+                    <p class="card-text text-muted small flex-grow-1">
+                        Filtra y analiza todas las salidas del inventario, incluyendo ventas, mermas, caducados y ajustes.
+                    </p>
+                    <a href="{{ route('movements') }}" class="btn btn-primary mt-auto">
+                        Abrir Reporte
+                    </a>
+                </div>
+            </div>
+        </div>
+
         <!-- Opción 2: Placeholder para un futuro reporte -->
         <div class="col">
             <div class="card h-100 shadow-sm">

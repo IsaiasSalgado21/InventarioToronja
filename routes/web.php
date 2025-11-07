@@ -38,6 +38,10 @@ Route::middleware('auth')->group(function () {
     
     Route::get('/inventory/transfer', [InventoryController::class, 'showTransferForm'])->name('inventory.transfer.form');
     Route::post('/inventory/transfer', [InventoryController::class, 'storeTransfer'])->name('inventory.transfer.store');
+
+    Route::get('/inventory/remove', [InventoryController::class, 'showRemoveForm'])->name('inventory.remove.form');
+    Route::post('/inventory/remove', [InventoryController::class, 'storeRemove'])->name('inventory.remove.store');
+
     Route::get('/movements', [InventoryMovementController::class, 'index'])->name('movements');
     Route::get('/management', [DashboardController::class, 'management'])->name('management');
 

@@ -32,6 +32,9 @@
             <a href="{{ route('inventory.transfer.form') }}" class="btn btn-info me-2">
                 <i class="bi bi-arrow-left-right"></i> Transferir Stock
             </a>
+            <a href="{{ route('inventory.remove.form') }}" class="btn btn-danger me-2">
+                <i class="bi bi-box-arrow-up-right"></i> Registrar Salida
+            </a>
             <a href="{{ route('presentations.create') }}" class="btn btn-primary">
                 Crear Presentación
             </a>
