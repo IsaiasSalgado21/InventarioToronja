@@ -19,10 +19,11 @@ class InventoryMovementController extends Controller
             'end_date' => 'nullable|date|after_or_equal:start_date',
         ]);
 
-        // 2. Definir los tipos de movimiento para los cálculos
-        $lossTypes = ['merma_recepcion', 'caducado', 'ajuste_salida', 'otro'];
-        $saleTypes = ['venta'];
-        $entryTypes = ['entrada'];
+    // 2. Definir los tipos de movimiento para los cálculos
+    // Incluimos sinónimos que pueden venir de seeders o diferentes procesos
+    $lossTypes = ['merma_recepcion', 'merma', 'caducado', 'ajuste_salida', 'otro'];
+    $saleTypes = ['venta', 'salida'];
+    $entryTypes = ['entrada'];
 
         // 3. Empezar la consulta de Eloquent
         $query = InventoryMovement::with([

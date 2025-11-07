@@ -8,6 +8,8 @@
     <meta http-equiv="Expires" content="0">
     <title>@yield('title', 'Toronja Print')</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    @stack('styles')
 </head>
 <body class="bg-light">
 
@@ -58,8 +60,8 @@
     @yield('content')
 </div>
 
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    {{-- Scripts empujados por las vistas (ej. @push('scripts')) --}}
-    @stack('scripts')
+@stack('scripts')
 </body>
 </html>

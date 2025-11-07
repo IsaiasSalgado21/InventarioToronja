@@ -56,7 +56,22 @@ class SupplierController extends Controller
     {
         $supplier = Supplier::findOrFail($id); // Solo obtiene si no está soft deleted
 
-        return response()->json($supplier);
+        // If the request expects JSON (AJAX/API), return JSON, otherwise render a blade view
+        if (request()->wantsJson() || request()->expectsJson()) {
+            return response()->json($supplier);
+        }
+
+        return view('suppliers.show', compact('supplier'));
+    }
+
+    /**
+     * Show the form for editing the specified supplier (web).
+     */
+    public function edit($id)
+    {
+        $supplier = Supplier::findOrFail($id);
+
+        return view('suppliers.edit', compact('supplier'));
     }
 
 
@@ -74,7 +89,14 @@ class SupplierController extends Controller
 
         $supplier->update($data);
 
-        return response()->json(['message' => 'Supplier updated']);
+        // For AJAX / API callers, keep returning JSON
+        if ($request->wantsJson() || $request->expectsJson()) {
+            return response()->json(['message' => 'Supplier updated']);
+        }
+
+        // For web requests, redirect back to the supplier show page with a flash message
+        return redirect()->route('suppliers.show', $supplier->id)
+            ->with('success', 'Proveedor actualizado correctamente.');
     }
 
     public function destroy($id)

@@ -63,6 +63,8 @@ Route::middleware('auth')->group(function () {
     Route::Resource('presentations', PresentationController::class);
     Route::Resource('inventory-movements', InventoryMovementController::class);
     Route::Resource('price-histories', PriceHistoryController::class);
+    
+    Route::get('/reports/price-history', [ReportController::class, 'priceHistory'])->name('reports.price-history');
     Route::Resource('storage_zones', StorageZoneController::class);
     Route::Resource('item-locations', ItemLocationController::class);
 });

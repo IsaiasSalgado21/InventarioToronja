@@ -52,13 +52,30 @@
         <div class="col">
             <div class="card h-100 shadow-sm">
                 <div class="card-body d-flex flex-column">
-                    <!-- ... (icono, etc.) ... -->
+                        <i class="bi bi-box-arrow-up-right" style="font-size: 2rem; color: var(--bs-danger);"></i>
                     <h5 class="card-title">Reporte de Movimientos (Salidas/Mermas)</h5>
                     <p class="card-text text-muted small flex-grow-1">
                         Filtra y analiza todas las salidas del inventario, incluyendo ventas, mermas, caducados y ajustes.
                     </p>
                     <a href="{{ route('movements') }}" class="btn btn-primary mt-auto">
                         Abrir Reporte
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <div class="mb-3">
+                        <i class="bi bi-graph-down" style="font-size: 2rem; color: var(--bs-info);"></i>
+                    </div>
+                    <h5 class="card-title">Auditoría de Precios de Venta</h5>
+                    <p class="card-text text-muted small flex-grow-1">
+                        Rastrea quién cambió el precio de venta de un producto, cuándo lo hizo, y de cuánto a cuánto cambió.
+                    </p>
+                    <a href="{{ route('reports.price-history') }}" class="btn btn-primary mt-auto">
+                        Generar Reporte
                     </a>
                 </div>
             </div>

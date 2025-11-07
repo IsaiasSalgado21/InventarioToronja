@@ -45,6 +45,15 @@
 
     <div class="card shadow-sm">
         <div class="card-body table-responsive">
+            <!-- Gráfica de margen por mes -->
+            <div class="mb-4">
+                <h6>Evolución mensual de Margen (últimos 6 meses)</h6>
+                <canvas id="marginChart" height="100"></canvas>
+            </div>
+
+            {{-- Los datos de la serie mensual (revenue/cost/margin) los calcula el controlador y se pasan aquí: 
+                 $chartLabels, $chartRevenue, $chartCost, $chartMargin --}}
+
             <table class="table table-hover align-middle">
                 <thead class="table-light">
                     <tr>
@@ -99,3 +108,68 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+    <!-- Chart.js CDN (ya debería estar en layout; duplicar es seguro para esta vista) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
+    <script>
+        (function(){
+            const labels = @json($chartLabels ?? []);
+            const revenue = @json($chartRevenue ?? []);
+            const cost = @json($chartCost ?? []);
+            const margin = @json($chartMargin ?? []);
+
+            const ctx = document.getElementById('marginChart');
+            if (!ctx) return;
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Ingresos (MXN)',
+                            data: revenue,
+                            borderColor: 'rgba(40,167,69,1)',
+                            backgroundColor: 'rgba(40,167,69,0.15)',
+                            fill: true,
+                            tension: 0.25,
+                            pointRadius: 3,
+                        },
+                        {
+                            label: 'Costo (MXN)',
+                            data: cost,
+                            borderColor: 'rgba(220,53,69,1)',
+                            backgroundColor: 'rgba(220,53,69,0.12)',
+                            fill: true,
+                            tension: 0.25,
+                            pointRadius: 3,
+                        },
+                        {
+                            label: 'Margen (MXN)',
+                            data: margin,
+                            borderColor: 'rgba(54,162,235,1)',
+                            backgroundColor: 'rgba(54,162,235,0.12)',
+                            fill: false,
+                            tension: 0.25,
+                            pointRadius: 4,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: true },
+                        tooltip: { mode: 'index', intersect: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { callback: function(v){ return '$' + Number(v).toLocaleString(); } }
+                        }
+                    }
+                }
+            });
+        })();
+    </script>
+@endpush

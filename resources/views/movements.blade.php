@@ -74,7 +74,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-white bg-warning">
+            <div class="card text-white bg-primary">
                 <div class="card-body">
                     <h6 class="card-title">Costo de Ventas (COGS)</h6>
                     <h4>${{ number_format($totalSalesCost, 2) }}</h4>
@@ -131,9 +131,11 @@
                                             $badge_color = 'bg-success';
                                         } elseif ($m->type == 'transferencia') {
                                             $badge_color = 'bg-info';
-                                        } elseif ($m->type == 'venta') {
+                                        } elseif (in_array($m->type, ['venta', 'salida'])) {
+                                            // 'salida' es sinónimo de venta en algunos seeders/procesos
                                             $badge_color = 'bg-primary';
-                                        } elseif (in_array($m->type, ['caducado', 'ajuste_salida', 'merma_recepcion', 'otro'])) {
+                                            $type_name = 'Venta';
+                                        } elseif (in_array($m->type, ['caducado', 'ajuste_salida', 'merma_recepcion', 'merma', 'otro'])) {
                                             $badge_color = 'bg-danger';
                                             $type_name = 'Merma (' . $type_name . ')';
                                         }
@@ -151,7 +153,7 @@
                                         if ($m->type == 'entrada') {
                                             $quantity_color = 'text-success';
                                             $quantity_prefix = '+';
-                                        } elseif (in_array($m->type, ['venta', 'caducado', 'ajuste_salida', 'merma_recepcion', 'otro'])) {
+                                        } elseif (in_array($m->type, ['venta', 'salida', 'caducado', 'ajuste_salida', 'merma_recepcion', 'merma', 'otro'])) {
                                             $quantity_color = 'text-danger';
                                             $quantity_prefix = '-';
                                         }

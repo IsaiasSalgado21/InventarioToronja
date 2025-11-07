@@ -221,12 +221,25 @@ class InventoryController extends Controller
                 $destZoneName = StorageZone::find($data['dest_zone_id'])->name ?? 'ID '.$data['dest_zone_id'];
 
                 // 7. Registrar el movimiento
+                // Intentar asignar supplier a la transferencia a partir de la última entrada conocida
+                $lastSupplierId = InventoryMovement::where('presentation_id', $data['presentation_id'])
+                                    ->where('type', 'entrada')
+                                    ->orderByDesc('movement_date')
+                                    ->value('supplier_id');
+
+                // Obtener costo promedio de entradas (opcional para trazabilidad)
+                $avg_cost = $presentation->inventoryMovements()
+                                   ->where('type', 'entrada')
+                                   ->where('unit_cost', '>', 0)
+                                   ->avg('unit_cost') ?? null;
+
                 InventoryMovement::create([
                     'presentation_id' => $data['presentation_id'],
                     'user_id'         => Auth::id(),
+                    'supplier_id'     => $lastSupplierId,
                     'type'            => 'transferencia',
                     'quantity'        => $data['quantity'],
-                    // El costo (unit_cost) es null aquí, porque no es una compra
+                    'unit_cost'       => $avg_cost,
                     'notes'           => "De: {$originZoneName} -> A: {$destZoneName}. " . ($data['notes'] ?? ''),
                     'movement_date'   => now(),
                 ]);
@@ -301,10 +314,17 @@ class InventoryController extends Controller
                                    ->where('unit_cost', '>', 0)
                                    ->avg('unit_cost') ?? 0;
 
+                // Intentar asignar supplier para esta salida a partir de la última entrada
+                $lastSupplierId = InventoryMovement::where('presentation_id', $data['presentation_id'])
+                                    ->where('type', 'entrada')
+                                    ->orderByDesc('movement_date')
+                                    ->value('supplier_id');
+
                 // 7. Registrar el movimiento de salida
                 InventoryMovement::create([
                     'presentation_id' => $data['presentation_id'],
                     'user_id'         => Auth::id(),
+                    'supplier_id'     => $lastSupplierId,
                     'type'            => $data['type'], // 'venta', 'caducado', etc.
                     'quantity'        => $data['quantity'], // O -$data['quantity']
                     'unit_cost'       => $avg_cost, // Registra el costo de lo que se saca
