@@ -23,6 +23,7 @@ class SupplierController extends Controller
             'phone' => 'nullable|string|max:50',
             'email' => 'nullable|email|max:150',
             'address' => 'nullable|string|max:255',
+            'RFC' => 'nullable|string|max:13',
         ]);
 
         $supplier = Supplier::create($data);
@@ -38,6 +39,7 @@ class SupplierController extends Controller
             'phone' => 'nullable|string|max:50',
             'email' => 'nullable|email|max:150',
             'address' => 'nullable|string|max:255',
+            'RFC' => 'nullable|string|max:13',
         ]);
 
         if ($validator->fails()) {
@@ -85,6 +87,7 @@ class SupplierController extends Controller
             'phone' => 'nullable|string|max:50',
             'email' => 'nullable|email|max:150',
             'address' => 'nullable|string|max:255',
+            'RFC' => 'nullable|string|max:13',
         ]);
 
         $supplier->update($data);

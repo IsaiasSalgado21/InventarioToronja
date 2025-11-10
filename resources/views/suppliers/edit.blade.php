@@ -48,6 +48,11 @@
                             <input id="address" name="address" type="text" class="form-control" value="{{ old('address', $supplier->address) }}" maxlength="255">
                         </div>
 
+                        <div class="mb-3">
+                            <label for="RFC" class="form-label">RFC</label>
+                            <input id="RFC" name="RFC" type="text" class="form-control" value="{{ old('RFC', $supplier->RFC) }}" maxlength="13">
+                        </div>
+
                         <div class="d-flex justify-content-between">
                             <a href="{{ route('suppliers.show', $supplier->id) }}" class="btn btn-secondary">Cancelar</a>
                             <button class="btn btn-primary">Guardar cambios</button>

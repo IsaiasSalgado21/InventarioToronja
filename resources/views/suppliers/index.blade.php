@@ -39,6 +39,8 @@
                         <th>Contacto</th>
                         <th>Teléfono</th>
                         <th>Email</th>
+                        <th>Address</th>
+                        <th>RFC</th>
                         <th class="text-end">Acciones</th>
                     </tr>
                 </thead>
@@ -50,6 +52,8 @@
                             <td>{{ $supplier->contact ?? '–' }}</td>
                             <td>{{ $supplier->phone ?? '–' }}</td>
                             <td>{{ $supplier->email ?? '–' }}</td>
+                            <td>{{ $supplier->address ?? '–' }}</td>
+                            <td>{{ $supplier->RFC ?? '–' }}</td>
                             <td class="text-end">
                                 {{-- Botón Ver Detalle --}}
                                 <a href="{{ route('suppliers.show', $supplier->id) }}" class="btn btn-info btn-sm" title="Ver Detalles">

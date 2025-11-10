@@ -136,7 +136,7 @@ class InventorySeeder extends Seeder
                 $zones[$s['zone']],
                 $s['qty'],
                 $s['notes'],
-                'salida'
+                'venta'
             );
         }
 
@@ -147,7 +147,7 @@ class InventorySeeder extends Seeder
                 $zones[$w['zone']],
                 $w['qty'],
                 $w['notes'],
-                'merma'
+                'ajuste_salida'
             );
         }
 
@@ -239,11 +239,7 @@ class InventorySeeder extends Seeder
 
                 // 2. Actualizar el stock total de la presentación
                 $presentation->increment('stock_current', $quantity);
-                
-                // 3. (Opcional pero recomendado) Actualizar el precio de venta si es la primera vez
-                // if ($presentation->unit_price == 0) {
-                //     $presentation->update(['unit_price' => $unit_cost * 1.5]); // ej. margen del 50%
-                // }
+            
 
                 // 4. Registrar el movimiento
                 InventoryMovement::create([
@@ -311,6 +307,12 @@ class InventorySeeder extends Seeder
                                     ->orderByDesc('movement_date')
                                     ->value('supplier_id');
 
+                // 5. Obtener el costo promedio para registrar la pérdida/salida
+                $avg_cost = $presentation->inventoryMovements()
+                        ->where('type', 'entrada')
+                        ->where('unit_cost', '>', 0)
+                        ->avg('unit_cost') ?? 0;
+
                 // Registrar el movimiento (si no hay supplier previo, quedará null)
                 InventoryMovement::create([
                     'presentation_id' => $presentation->id,
@@ -318,7 +320,7 @@ class InventorySeeder extends Seeder
                     'supplier_id' => $lastSupplierId,
                     'type' => $type,
                     'quantity' => $actualQty,
-                    'unit_cost' => $presentation->unit_price ?? 0,
+                    'unit_cost' => $avg_cost,
                     'notes' => $notes,
                     'movement_date' => $movementDate ?? now(),
                 ]);

@@ -11,7 +11,7 @@ class Supplier extends Model
 
     protected $table = 'suppliers';
 
-    protected $fillable = ['name', 'contact', 'phone', 'email', 'address'];
+    protected $fillable = ['name', 'contact', 'phone', 'email', 'address', 'RFC'];
 
 
     public function inventoryMovements()

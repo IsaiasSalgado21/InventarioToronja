@@ -36,7 +36,10 @@
                 <i class="bi bi-box-arrow-up-right"></i> Registrar Salida
             </a>
             <a href="{{ route('presentations.create') }}" class="btn btn-primary">
-                Crear Presentación
+                <i class ="bi bi-plus-circle"></i> Crear Presentación
+            </a>
+            <a href="{{ route('items.create') }}" class="btn btn-primary">
+                <i class ="bi bi-plus-circle"></i> Crear Insumo
             </a>
         </div>
     </div>

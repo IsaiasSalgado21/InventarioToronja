@@ -27,6 +27,9 @@
                         <dt class="col-sm-4">Dirección</dt>
                         <dd class="col-sm-8">{{ $supplier->address ?? '-' }}</dd>
 
+                        <dt class="col-sm-4">RFC</dt>
+                        <dd class="col-sm-8">{{ $supplier->RFC ?? '-' }}</dd>
+
                         <dt class="col-sm-4">Creado</dt>
                         <dd class="col-sm-8">{{ $supplier->created_at ? $supplier->created_at->format('Y-m-d H:i') : '-' }}</dd>
 

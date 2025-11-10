@@ -45,7 +45,7 @@
                             <small class="text-muted">Solo se muestran productos con stock disponible.</small>
                             @error('presentation_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror {{-- <-- ¡CORREGIDO! Antes decía @endZonaselect --}}
+                            @enderror 
                         </div>
 
                         <div class="mb-3">
@@ -65,7 +65,6 @@
                             @enderror
                         </div>
 
-                        {{-- CAMPO NUEVO Y MUY IMPORTANTE --}}
                         <div class="mb-3">
                             <label for="type" class="form-label">Motivo / Tipo de Salida *</label>
                             <select class="form-select @error('type') is-invalid @enderror" id="type" name="type" required>
@@ -73,7 +72,6 @@
                                 <option value="venta" {{ old('type') == 'venta' ? 'selected' : '' }}>Venta</option>
                                 <option value="caducado" {{ old('type') == 'caducado' ? 'selected' : '' }}>Caducado / Merma</option>
                                 <option value="ajuste_salida" {{ old('type') == 'ajuste_salida' ? 'selected' : '' }}>Ajuste Manual (Pérdida)</option>
-                                <option value="otro" {{ old('type') == 'otro' ? 'selected' : '' }}>Otro</option>
                             </select>
                             @error('type')
                                 <div class="invalid-feedback">{{ $message }}</div>

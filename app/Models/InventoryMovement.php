@@ -11,6 +11,11 @@ class InventoryMovement extends Model
 
     protected $table = 'inventory_movements';
 
+    protected $casts = [
+        'movement_date' => 'date',
+        'unit_cost' => 'decimal:2'
+    ];
+
     protected $fillable = [
         'presentation_id',
         'user_id',
@@ -20,6 +25,8 @@ class InventoryMovement extends Model
         'notes',
         'supplier_id',
         'unit_cost',
+        'created_at',  
+        'updated_at'
     ];
 
     public function presentation()
