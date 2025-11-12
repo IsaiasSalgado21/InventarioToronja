@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\InventoryMovement;
 use App\Models\Presentation;
@@ -13,10 +14,10 @@ use Barryvdh\DomPDF\Facade\Pdf; // Importar para PDF
 
 class ReportController extends Controller
 {
-    /**
-     * Muestra el reporte de comparación de precios de COSTO de proveedores.
-     * Analiza la tabla inventory_movements.
-     */
+    public function __construct()
+    {
+        $this->middleware('can:is-admin');
+    }
     public function priceComparison(Request $request)
     {
         // Validar que si se envía una presentación, esta exista

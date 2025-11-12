@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
-{
+{   
+    public function __construct()
+    {
+        $this->middleware('can:is-admin');
+    }
     public function index()
     {
         $categories = Category::orderBy('name')->get(); // SoftDeletes excluye automáticamente deleted_at != null

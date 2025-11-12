@@ -2,16 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\Item;
 use App\Models\Category;
 use App\Models\Supplier;
+use App\Models\Presentation;
+use App\Models\ItemLocation;
+use App\Models\StorageZone;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use App\Models\Presentation;
 
 class ItemController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:is-admin');
+    }
+
     public function index(Request $request)
     {
         $query = Item::query();

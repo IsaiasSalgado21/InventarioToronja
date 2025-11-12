@@ -14,7 +14,7 @@
 <body class="bg-light">
 
 {{-- Navbar --}}
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-light " style="background-color: #ff871eff;">
     <div class="container-fluid">
         <a class="navbar-brand" href="{{ route('dashboard') }}">Toronja Print</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -23,16 +23,20 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             @auth
             <ul class="navbar-nav me-auto">
+                @can('is-admin')
                 <li class="dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                         productos
                     </a>
+                    @endcan
                     <ul class="dropdown-menu">
+                        @can('is-admin')
                         <li><a class="dropdown-item" href="{{ route('items.create') }}">Crear Insumo</a></li>
                         <li><a class="dropdown-item" href="{{ route('presentations.create') }}">Crear Presentación</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="{{ route('items.index') }}">Ver Insumos</a></li>
                         <li><a class="dropdown-item" href="{{ route('presentations.index') }}">Ver Presentaciones</a></li>
+                        @endcan
                     </ul>
                 </li>
                 <li class="dropdown">
@@ -47,17 +51,19 @@
                         <li><a class="dropdown-item" href="{{ route('storage_zones.index') }}">Ver Zonas de Almacen</a></li>
                         
                     </ul>
+                    @can('is-admin')
                 <li class="nav-item"><a class="nav-link" href="{{ route('suppliers.index') }}">proveedores</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('reports') }}">Reports</a></li>
+                    @endcan
             </ul>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <span class="navbar-text text-white me-3">{{ auth()->user()->name }}</span>
+                    <span class="navbar-text text-dark me-3">{{ auth()->user()->name }}</span>
                 </li>
                 <li class="nav-item">
                     <form action="{{ route('logout') }}" method="POST" class="d-inline">
                         @csrf
-                        <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
+                        <button type="submit" class="btn btn-outline-dark btn-sm">Logout</button>
                     </form>
                 </li>
             </ul>

@@ -7,14 +7,17 @@ use App\Models\InventoryMovement;
 use App\Models\Item;
 use App\Models\Presentation;
 use App\Models\Supplier;
-use App\Models\User; // Asegúrate de importar User para el método management
+use App\Models\User; 
 use Illuminate\Support\Facades\DB;
+use Illuminate\support\Facades\Gate;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        // ----- 1. LÓGICA PARA LAS 4 TARJETAS KPI (NUEVO) -----
+        if (Gate::denies('is-admin')) {
+            return redirect()->route('inventory');
+        }
 
         // KPI 1: Alertas de Stock Bajo
         $totalStockAlerts = Presentation::where('stock_minimum', '>', 0)

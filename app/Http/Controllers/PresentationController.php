@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Presentation;
 use App\Models\Item;
@@ -9,7 +10,10 @@ use Illuminate\Validation\Rule;
 
 class PresentationController extends Controller
 {
-
+    public function __construct()
+    {
+        $this->middleware('can:is-admin');
+    }
     public function index(Request $request)
     {
         $query = Presentation::query();

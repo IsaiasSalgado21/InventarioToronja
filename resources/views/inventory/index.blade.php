@@ -22,12 +22,14 @@
             <a href="{{ route('inventory.remove.form') }}" class="btn btn-danger me-2">
                 <i class="bi bi-box-arrow-up-right"></i> Registrar Salida
             </a>
+            @can('is-admin')
             <a href="{{ route('presentations.create') }}" class="btn btn-primary">
                 <i class ="bi bi-plus-circle"></i> Crear Presentación
             </a>
             <a href="{{ route('items.create') }}" class="btn btn-primary">
                 <i class ="bi bi-plus-circle"></i> Crear Insumo
             </a>
+            @endcan
         </div>
     </div>
     <div class="card-body">
@@ -60,9 +62,7 @@
                             <td>
                                 <strong>{{ $location->stored_quantity }}</strong>
                             </td>
-                            <!-- <td>
-                                <a href="#" class="btn btn-sm btn-light">Mover</a>
-                            </td> -->
+                            
                         </tr>
                     @empty
                         <tr>

@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Supplier;
 use Illuminate\Support\Facades\Validator;
 
 class SupplierController extends Controller
 {
-
+    public function __construct()
+    {
+        $this->middleware('can:is-admin');
+    }
     public function index()
     {
         $suppliers = Supplier::paginate(10);

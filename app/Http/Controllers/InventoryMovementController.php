@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Models\InventoryMovement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -9,6 +10,10 @@ use App\Models\Presentation;
 
 class InventoryMovementController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:is-admin');
+    }
     public function index(Request $request)
     {
         // 1. Validar filtros entrantes
