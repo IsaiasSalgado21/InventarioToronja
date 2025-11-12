@@ -13,12 +13,7 @@
     </div>
     <p class="text-muted">Lista de todos los tipos de "paquetes" o formatos en los que manejas tus productos (Items).</p>
 
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
+
 
     <div class="card shadow-sm">
         <div class="card-body table-responsive">

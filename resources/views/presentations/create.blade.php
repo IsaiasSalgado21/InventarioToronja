@@ -119,7 +119,6 @@
                     <small class="text-muted">Opcional: Si quieres rastrear el espacio físico, define cuántos m² ocupa UNA unidad.</small>
                 </div>
 
-                {{-- IMPORTANTE: No pedir stock inicial ni ubicación aquí --}}
                 <div class="alert alert-info small mt-4">
                     Nota: El stock inicial (cantidad) y la ubicación se asignan después, usando la opción "Recibir Stock" en la pantalla de Inventario.
                 </div>

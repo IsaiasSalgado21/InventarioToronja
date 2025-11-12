@@ -14,20 +14,6 @@
 </div>
 <p class="text-muted">Gestiona tus zonas de almacenamiento y su capacidad.</p>
 
-{{-- Notificaciones de Éxito y Error --}}
-@if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-@endif
-@if(session('error'))
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        {{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-@endif
-{{-- Fin Notificaciones --}}
 
 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
     
@@ -38,7 +24,6 @@
                     <h5 class="mb-0">{{ $zone->name }}</h5>
                 </div>
                 
-                {{-- ------ INICIO: card-body con 2 barras (UNIDADES + ESPACIO) y estado visual ------ --}}
                 <div class="card-body d-flex flex-column">
                     <p class="small text-muted">{{ $zone->description }}</p>
 
