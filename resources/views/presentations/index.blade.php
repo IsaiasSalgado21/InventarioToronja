@@ -4,7 +4,64 @@
 
 @section('content')
 <div class="container py-4">
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h6 class="card-title">Buscar y Filtrar Presentaciones</h6>
+            <form action="{{ route('presentations.index') }}" method="GET" class="row g-3">
+                
+                <div class="col-md-4">
+                    <label for="sku" class="form-label">SKU</label>
+                    <input type="text" class="form-control" id="sku" name="sku" value="{{ $request->sku ?? '' }}" placeholder="Buscar SKU...">
+                </div>
+                
+                <div class="col-md-4">
+                    <label for="item_id" class="form-label">Item (Producto General)</label>
+                    <select class="form-select" id="item_id" name="item_id">
+                        <option value="">-- Todos los Items --</option>
+                        @foreach($items as $item)
+                            <option value="{{ $item->id }}" @selected($request->item_id == $item->id)>
+                                {{ $item->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
 
+                <div class="col-md-4">
+                    <label for="archetype" class="form-label">Arquetipo / Modelo</label>
+                    <input type="text" class="form-control" id="archetype" name="archetype" value="{{ $request->archetype ?? '' }}" placeholder="Ej: Clásica 11oz...">
+                </div>
+                
+                <div class="col-md-4">
+                    <label for="quality" class="form-label">Calidad</label>
+                    <select class="form-select" id="quality" name="quality">
+                        <option value="">-- Todas --</option>
+                        @foreach($calidadesUnicas as $quality)
+                            <option value="{{ $quality->quality }}" @selected($request->quality == $quality->quality)>
+                                {{ $quality->quality }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                
+                <div class="col-md-4">
+                    <label for="stock_status" class="form-label">Estado de Stock</label>
+                    <select class="form-select" id="stock_status" name="stock_status">
+                        <option value="">-- Todos --</option>
+                        <option value="low" @selected($request->stock_status == 'low')>Stock Bajo (<= Mínimo)</option>
+                        <option value="out" @selected($request->stock_status == 'out')>Agotado (Stock 0)</option>
+                    </select>
+                </div>
+                
+                <div class="col-md-4 d-flex align-items-end">
+                    <a href="{{ route('presentations.index') }}" class="btn btn-secondary me-2">Limpiar</a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-search"></i> Buscar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h3>Presentaciones de Productos</h3>
         <a href="{{ route('presentations.create') }}" class="btn btn-primary">
@@ -12,8 +69,6 @@
         </a>
     </div>
     <p class="text-muted">Lista de todos los tipos de "paquetes" o formatos en los que manejas tus productos (Items).</p>
-
-
 
     <div class="card shadow-sm">
         <div class="card-body table-responsive">

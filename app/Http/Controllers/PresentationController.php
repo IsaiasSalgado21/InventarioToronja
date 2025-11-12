@@ -10,10 +10,48 @@ use Illuminate\Validation\Rule;
 class PresentationController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $presentations = Presentation::with('item')->latest('id')->paginate(15);
-        return view('presentations.index', compact('presentations'));
+        $query = Presentation::query();
+
+        $query->with(['item.category']); 
+
+        if ($request->filled('sku')) {
+            $query->where('sku', 'like', '%' . $request->sku . '%');
+        }
+
+        if ($request->filled('item_id')) {
+            $query->where('item_id', $request->item_id);
+        }
+        
+        if ($request->filled('archetype')) {
+            $query->where('archetype', 'like', '%' . $request->archetype . '%');
+        }
+
+        if ($request->filled('quality')) {
+            $query->where('quality', $request->quality);
+        }
+        
+        if ($request->filled('stock_status')) {
+            if ($request->stock_status == 'low') {
+                $query->where('stock_minimum', '>', 0)
+                      ->whereRaw('stock_current <= stock_minimum');
+            } elseif ($request->stock_status == 'out') {
+                $query->where('stock_current', '=', 0);
+            }
+        }
+
+        $presentations = $query->latest('id')->paginate(15)->withQueryString();
+
+        $items = Item::orderBy('name')->get();
+        $calidadesUnicas = Presentation::select('quality')
+                            ->whereNotNull('quality')
+                            ->where('quality', '!=', '')
+                            ->distinct()
+                            ->orderBy('quality')
+                            ->get();
+
+        return view('presentations.index', compact('presentations', 'items', 'calidadesUnicas', 'request'));
     }
 
     public function create()
