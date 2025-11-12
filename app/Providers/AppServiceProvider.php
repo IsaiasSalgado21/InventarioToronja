@@ -7,6 +7,7 @@ use App\Models\StorageZone;
 use App\Observers\StorageZoneObserver;
 use App\Models\Presentation;
 use App\Observers\PresentationObserver;
+use Illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,5 +26,6 @@ class AppServiceProvider extends ServiceProvider
     {
         StorageZone::observe(StorageZoneObserver::class);
         Presentation::observe(PresentationObserver::class);
+        Paginator::useBootstrapFive();
     }
 }
