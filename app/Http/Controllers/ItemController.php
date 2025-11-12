@@ -8,16 +8,47 @@ use App\Models\Category;
 use App\Models\Supplier;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use App\Models\Presentation;
 
 class ItemController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $items = Item::with(['category', 'presentations.itemLocations.storageZone'])
-            ->latest('id') 
-            ->get();
+        $query = Item::query();
 
-        return view('items.index', compact('items'));
+        $query->with(['category', 'presentations']);
+
+        if ($request->filled('name')) {
+            $query->where('name', 'like', '%' . $request->name . '%');
+        }
+
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+
+        if ($request->filled('archetype')) {
+            $query->whereHas('presentations', function ($q) use ($request) {
+                $q->where('archetype', 'like', '%' . $request->archetype . '%');
+            });
+        }
+
+        if ($request->filled('quality')) {
+            $query->whereHas('presentations', function ($q) use ($request) {
+                $q->where('quality', $request->quality);
+            });
+        }
+
+        $items = $query->latest('id')->paginate(15)->withQueryString();
+
+        $categories = Category::orderBy('name')->get();
+        $calidadesUnicas = Presentation::select('quality')
+                            ->whereNotNull('quality')
+                            ->where('quality', '!=', '')
+                            ->distinct()
+                            ->orderBy('quality')
+                            ->get();
+
+        return view('items.index', compact('items', 'categories', 'calidadesUnicas', 'request'));
     }
 
     public function create()

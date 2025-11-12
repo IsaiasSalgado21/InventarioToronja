@@ -20,6 +20,11 @@ class Item extends Model
         'abc_class',
         'expiry_date',
     ];
+
+    protected $casts = [
+        'expiry_date' => 'date', 
+    ];
+
     public function category()
     {
         return $this->belongsTo(Category::class);

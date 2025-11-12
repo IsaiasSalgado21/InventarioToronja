@@ -23,9 +23,30 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             @auth
             <ul class="navbar-nav me-auto">
-                <li class="nav-item"><a class="nav-link" href="{{ route('inventory') }}">Inventario</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('movements') }}">Movimientos</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('storage_zones.index') }}">Almacen</a></li>
+                <li class="dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        productos
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ route('items.create') }}">Crear Insumo</a></li>
+                        <li><a class="dropdown-item" href="{{ route('presentations.create') }}">Crear Presentación</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ route('items.index') }}">Ver Insumos</a></li>
+                        <li><a class="dropdown-item" href="{{ route('presentations.index') }}">Ver Presentaciones</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        Operaciones
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ route('inventory') }}">Ver Inventario General</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ route('movements') }}">Ver Historial de Movimientos</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ route('storage_zones.index') }}">Ver Zonas de Almacen</a></li>
+                        
+                    </ul>
                 <li class="nav-item"><a class="nav-link" href="{{ route('suppliers.index') }}">proveedores</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('reports') }}">Reports</a></li>
             </ul>
